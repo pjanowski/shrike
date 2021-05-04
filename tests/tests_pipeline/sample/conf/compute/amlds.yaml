@@ -1,0 +1,25 @@
+# @package _group_
+default_compute_target: "cpu-cluster" # name of default target
+compliant_datastore: "adlsgen1datastore" # where intermediary output is written
+noncompliant_datastore: "adlsgen1datastore"
+
+# Linux targets
+linux_cpu_dc_target: "cpu-d14-v2"
+linux_cpu_prod_target: "cpu-d14-v2"
+linux_gpu_dc_target: "gpu-dc-test"
+linux_gpu_prod_target: "gpu-cluster"
+
+# data I/O for linux modules
+linux_input_mode: "mount"
+linux_output_mode: "mount"
+
+# Windows targets
+windows_cpu_prod_target: "windows-ds15-v2"
+windows_cpu_dc_target: "win-dc-preview"
+
+# data I/O for windows modules
+windows_input_mode: "download"
+windows_output_mode: "upload"
+
+# hdi cluster
+hdi_prod_target: "hdi-cluster"

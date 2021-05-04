@@ -1,0 +1,168 @@
+{
+    "dataset_nodes": [
+        {
+            "additional_properties": {},
+            "data_path_parameter_name": null,
+            "data_set_definition": {
+                "additional_properties": {},
+                "data_type_short_name": "DataFrameDirectory",
+                "parameter_name": "TextData",
+                "value": null
+            },
+            "dataset_id": null,
+            "id": "d06bb757"
+        }
+    ],
+    "default_compute": null,
+    "default_datastore": null,
+    "edges": [
+        {
+            "additional_properties": {},
+            "destination_input_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "10f7b4a8",
+                "port_name": "Input_TextData",
+                "web_service_port": null
+            },
+            "source_output_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "d06bb757",
+                "port_name": "data",
+                "web_service_port": null
+            }
+        }
+    ],
+    "entity_interface": {
+        "additional_properties": {},
+        "data_path_parameter_list": [
+            {
+                "additional_properties": {},
+                "data_type_id": "DataFrameDirectory",
+                "default_value": {
+                    "additional_properties": {},
+                    "data_set_reference": {
+                        "additional_properties": {},
+                        "id": "c7219c07-79de-4cdc-bb36-3fe9c34f5f75",
+                        "name": null,
+                        "version": 1
+                    },
+                    "literal_value": null,
+                    "saved_data_set_reference": null
+                },
+                "documentation": null,
+                "is_optional": false,
+                "name": "TextData"
+            }
+        ],
+        "data_path_parameters": [],
+        "metadata_parameters": null,
+        "parameters": [],
+        "ports": null
+    },
+    "module_node_run_settings": [
+        {
+            "additional_properties": {},
+            "module_id": "db6f79cf-06a7-4fec-90d0-a8e264475e88",
+            "node_id": "10f7b4a8",
+            "run_settings": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "data_path_assignment": null,
+                    "data_set_definition_value_assignment": null,
+                    "linked_parameter_name": null,
+                    "mlc_compute_type": null,
+                    "name": "Adla account name",
+                    "use_graph_default_compute": null,
+                    "value": "",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "data_path_assignment": null,
+                    "data_set_definition_value_assignment": null,
+                    "linked_parameter_name": null,
+                    "mlc_compute_type": null,
+                    "name": "Custom job name suffix",
+                    "use_graph_default_compute": null,
+                    "value": "test",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "data_path_assignment": null,
+                    "data_set_definition_value_assignment": null,
+                    "linked_parameter_name": null,
+                    "mlc_compute_type": null,
+                    "name": "Scope param",
+                    "use_graph_default_compute": null,
+                    "value": "-tokens 50",
+                    "value_type": 0
+                }
+            ],
+            "step_type": "ScopeModule"
+        }
+    ],
+    "module_nodes": [
+        {
+            "additional_properties": {},
+            "cloud_settings": null,
+            "comment": null,
+            "control_inputs": null,
+            "id": "10f7b4a8",
+            "module_id": "db6f79cf-06a7-4fec-90d0-a8e264475e88",
+            "module_input_settings": [
+                {
+                    "additional_properties": {},
+                    "additional_transformations": null,
+                    "data_store_mode": null,
+                    "name": "Input_TextData",
+                    "path_on_compute": null
+                }
+            ],
+            "module_metadata_parameters": [],
+            "module_output_settings": [
+                {
+                    "additional_properties": {},
+                    "data_reference_name": "Output_SSPath",
+                    "data_store_mode": null,
+                    "data_store_name": "adlsgen1datastore",
+                    "dataset_output_options": {
+                        "additional_properties": {},
+                        "path_on_datastore": "/testScopeScript/{run-id}/outputdata.ss",
+                        "source_globs": null
+                    },
+                    "dataset_registration": null,
+                    "name": "Output_SSPath",
+                    "overwrite": null,
+                    "parameter_name": "output_ss",
+                    "path_on_compute": null,
+                    "web_service_port": null
+                }
+            ],
+            "module_parameters": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "data_path_assignment": null,
+                    "data_set_definition_value_assignment": null,
+                    "name": "PARAM_ExtractionClause",
+                    "value": "",
+                    "value_type": 0
+                }
+            ],
+            "module_type": null,
+            "regenerate_output": null,
+            "runconfig": null,
+            "use_graph_default_compute": true,
+            "use_graph_default_datastore": null
+        }
+    ]
+}

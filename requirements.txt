@@ -1,0 +1,19 @@
+# requirements for shrike.build
+argparse-dataclass~=0.1
+azure-identity~=1.5
+omegaconf~=2.0
+semver>=2.13.0
+
+# requirements for shrike.pipeline
+azure-ml-component>=0.1.0.34049888
+azureml-core>=1.20.0
+azureml-pipeline>=1.20.0
+azureml-sdk>=1.20.0
+cryptography>=3.3.2
+azure-cli-core>=2.11.1
+gitpython==3.1.0
+hydra-core==1.0.3
+
+# requirements for both shrike.build and shrike.pipeline
+ruamel.yaml>=0.16.12
+opencensus-ext-azure==1.0.7

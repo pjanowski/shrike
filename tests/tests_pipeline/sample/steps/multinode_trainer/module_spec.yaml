@@ -1,0 +1,41 @@
+$schema: http://azureml/sdk-1-5/DistributedComponent.json
+name: microsoft.com.amlds.multinodetrainer
+version: 1.0.0
+display_name: MultiNodeTrainer
+type: DistributedComponent
+description: Some training here
+is_deterministic: false
+tags:
+  Office:
+  helpDocument: https://aka.ms/aml/smartcompose
+  contact: aml-ds@microsoft.com
+inputs:
+  vocab_file:
+    type: AnyFile
+    description: Vocabulary file used to encode data, can be a single file or a directory
+      with a single file
+    optional: false
+  train_file:
+    type: AnyFile
+    description: File used for training, can be raw text or already encoded using
+      vocab
+    optional: false
+  validation_file:
+    type: AnyFile
+    description: File used for validation, can be raw text or already encoded using
+      vocab
+    optional: false
+outputs:
+  output_dir:
+    type: AnyDirectory
+    description: Directory containing latest and lowest perplexity checkpoints
+environment:
+  docker:
+    image: polymerprod.azurecr.io/training/pytorch:scpilot-rc2
+  conda:
+    conda_dependencies_file: pytorch_trainer_conda_env.yaml
+  os: Linux
+launcher:
+  type: mpi
+  additional_arguments: python run.py --vocab_file {inputs.vocab_file} --train_file
+    {inputs.train_file} --validation_file {inputs.validation_file} --output_dir {outputs.output_dir}

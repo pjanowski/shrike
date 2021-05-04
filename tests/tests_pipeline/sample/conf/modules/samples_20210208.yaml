@@ -1,0 +1,23 @@
+# @package _group_
+manifest:
+- key: MultiNodeTrainer # internal key used for component_load()
+  name: microsoft.com.amlds.multinodetrainer # registered name
+  yaml: "multinode_trainer/module_spec.yaml" # path to yaml spec
+  version: null # null by default
+
+- key: SparkHelloWorld
+  name: microsoft.com.azure.ml.hdi-probe
+  yaml: "spark_hello/module_spec.yaml"
+  version: null
+
+- name: stats_passthrough # if key is not specified, use name in component_load()
+  yaml: "stats_passthrough/module_spec.yaml"
+  version: null
+
+- name: stats_passthrough_windows
+  yaml: "stats_passthrough_windows/module_spec.yaml"
+  version: null
+
+- name: convert2ss
+  yaml: "convert_tsv_to_ss/module_spec.yaml"
+  version: null

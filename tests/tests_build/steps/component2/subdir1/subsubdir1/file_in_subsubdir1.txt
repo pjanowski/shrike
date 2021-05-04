@@ -1,0 +1,1 @@
+another file for component 2, this time in subsubdir1

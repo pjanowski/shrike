@@ -1,0 +1,443 @@
+{
+    "dataset_nodes": [
+        {
+            "additional_properties": {},
+            "data_path_parameter_name": null,
+            "data_set_definition": {
+                "additional_properties": {},
+                "data_type_short_name": "DataFrameDirectory",
+                "parameter_name": "input_dataset",
+                "value": null
+            },
+            "dataset_id": null,
+            "id": "d71f6863"
+        }
+    ],
+    "default_compute": null,
+    "default_datastore": null,
+    "edges": [
+        {
+            "additional_properties": {},
+            "destination_input_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "a8442c88",
+                "port_name": "input_path",
+                "web_service_port": null
+            },
+            "source_output_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "d71f6863",
+                "port_name": "data",
+                "web_service_port": null
+            }
+        },
+        {
+            "additional_properties": {},
+            "destination_input_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "ce3eb60f",
+                "port_name": "input_path",
+                "web_service_port": null
+            },
+            "source_output_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "a8442c88",
+                "port_name": "output_path",
+                "web_service_port": null
+            }
+        }
+    ],
+    "entity_interface": {
+        "additional_properties": {},
+        "data_path_parameter_list": [
+            {
+                "additional_properties": {},
+                "data_type_id": "DataFrameDirectory",
+                "default_value": {
+                    "additional_properties": {},
+                    "data_set_reference": {
+                        "additional_properties": {},
+                        "id": "c7219c07-79de-4cdc-bb36-3fe9c34f5f75",
+                        "name": null,
+                        "version": 1
+                    },
+                    "literal_value": null,
+                    "saved_data_set_reference": null
+                },
+                "documentation": null,
+                "is_optional": false,
+                "name": "input_dataset"
+            }
+        ],
+        "data_path_parameters": [],
+        "metadata_parameters": null,
+        "parameters": [],
+        "ports": null
+    },
+    "module_node_run_settings": [
+        {
+            "additional_properties": {},
+            "module_id": "7d1013e4-b86b-4df9-9719-637025e7d0e8",
+            "node_id": "a8442c88",
+            "run_settings": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": [
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "CpuCount",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "GpuCount",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "InteractivePort",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsIPythonEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsPreemptible",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsSSHEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsTensorBoardEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "JobPriority",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "MemoryRequestInGB",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "NodeCountSet",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "SSHPublicKey",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "ScaleInterval",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        }
+                    ],
+                    "mlc_compute_type": "AmlCompute",
+                    "name": "Target",
+                    "use_graph_default_compute": false,
+                    "value": "cpu-d14-v2",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "Environment variables",
+                    "use_graph_default_compute": null,
+                    "value": null,
+                    "value_type": 0
+                }
+            ],
+            "step_type": "PythonScriptModule"
+        },
+        {
+            "additional_properties": {},
+            "module_id": "335c44ce-d158-4f0d-9f93-8fa908f49622",
+            "node_id": "ce3eb60f",
+            "run_settings": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": [
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "CpuCount",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "GpuCount",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "InteractivePort",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsIPythonEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsPreemptible",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsSSHEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "IsTensorBoardEnabled",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "JobPriority",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "MemoryRequestInGB",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "NodeCountSet",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "SSHPublicKey",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        },
+                        {
+                            "additional_properties": {},
+                            "assignments_to_concatenate": null,
+                            "compute_run_settings": null,
+                            "mlc_compute_type": null,
+                            "name": "ScaleInterval",
+                            "use_graph_default_compute": null,
+                            "value": null,
+                            "value_type": 0
+                        }
+                    ],
+                    "mlc_compute_type": "AmlCompute",
+                    "name": "Target",
+                    "use_graph_default_compute": false,
+                    "value": "win-dc-preview",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "Environment variables",
+                    "use_graph_default_compute": null,
+                    "value": null,
+                    "value_type": 0
+                }
+            ],
+            "step_type": "PythonScriptModule"
+        }
+    ],
+    "module_nodes": [
+        {
+            "additional_properties": {},
+            "cloud_settings": null,
+            "comment": null,
+            "control_inputs": null,
+            "id": "a8442c88",
+            "module_id": "7d1013e4-b86b-4df9-9719-637025e7d0e8",
+            "module_input_settings": null,
+            "module_metadata_parameters": [],
+            "module_output_settings": [
+                {
+                    "additional_properties": {},
+                    "data_reference_name": "output_path",
+                    "data_store_mode": "mount",
+                    "data_store_name": "adlsgen1datastore",
+                    "dataset_output_options": null,
+                    "dataset_registration": null,
+                    "name": "output_path",
+                    "overwrite": null,
+                    "path_on_compute": null,
+                    "web_service_port": null
+                }
+            ],
+            "module_parameters": [],
+            "module_type": null,
+            "regenerate_output": null,
+            "runconfig": null,
+            "use_graph_default_compute": false,
+            "use_graph_default_datastore": null
+        },
+        {
+            "additional_properties": {},
+            "cloud_settings": null,
+            "comment": null,
+            "control_inputs": null,
+            "id": "ce3eb60f",
+            "module_id": "335c44ce-d158-4f0d-9f93-8fa908f49622",
+            "module_input_settings": null,
+            "module_metadata_parameters": [],
+            "module_output_settings": [
+                {
+                    "additional_properties": {},
+                    "data_reference_name": "output_path",
+                    "data_store_mode": "mount",
+                    "data_store_name": "adlsgen1datastore",
+                    "dataset_output_options": null,
+                    "dataset_registration": null,
+                    "name": "output_path",
+                    "overwrite": null,
+                    "path_on_compute": null,
+                    "web_service_port": null
+                }
+            ],
+            "module_parameters": [],
+            "module_type": null,
+            "regenerate_output": null,
+            "runconfig": null,
+            "use_graph_default_compute": false,
+            "use_graph_default_datastore": null
+        }
+    ]
+}

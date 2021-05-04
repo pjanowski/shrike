@@ -1,0 +1,48 @@
+$schema: http://azureml/sdk-1-5/HDInsightComponent.json
+name: microsoft.com.azure.ml.hdi-probe
+version: 0.0.0
+display_name: hdi-probe
+type: HDInsightComponent
+description: |
+  Fetch a data extraction from Heron / OdinML and print some basic statistics
+  on that data.
+is_deterministic: false
+tags:
+  helpDocument: https://dev.azure.com/msdata/Vienna/_git/aml-ds?path=%2Frecipes%2Fsigned-modules%2Fhdi-probe
+  contact: aml-ds@microsoft.com
+inputs:
+  input_path:
+    type: AnyDirectory
+    description: Path to Heron extraction or other data to import from.
+    optional: false
+  in_file_type:
+    type: Enum
+    description: Input file type.
+    enum:
+    - csv
+    - json
+    - parquet
+    optional: false
+  percent_take:
+    type: Integer
+    description: Integer percent of data to keep from this extraction.
+    min: 0
+    max: 100
+    optional: false
+  out_file_type:
+    type: Enum
+    description: File type for output.
+    enum:
+    - csv
+    - json
+    - parquet
+    optional: false
+outputs:
+  output_path:
+    type: AnyDirectory
+    description: Path / filename to write the data extraction to.
+hdinsight:
+  file: run.py
+  args: >-
+    --input_path {inputs.input_path} --in_file_type {inputs.in_file_type} --percent_take
+    {inputs.percent_take} --out_file_type {inputs.out_file_type} --output_path {outputs.output_path}

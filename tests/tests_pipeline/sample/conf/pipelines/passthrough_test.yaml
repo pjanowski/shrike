@@ -1,0 +1,26 @@
+# Config for integration tests for baseline
+defaults:
+  - aml: amlds
+  - compute: amlds
+  - modules: samples_20210208
+
+run: # params for running pipeline
+  experiment_name: "integrationtests"
+  tags:
+    unit_test: True
+    unit_test_experiment: passthrough_test
+
+compute: # compute target params
+  # HDI/Spark
+  hdi_driver_memory: "4g"
+  hdi_driver_cores: 10
+  hdi_executor_memory: "3g"
+  hdi_executor_cores: 10
+
+module_loader: # module loading params
+  use_local: "*"
+  force_default_module_version: null
+  force_all_module_version: null
+
+passthrough:
+  input_dataset: dummy_data

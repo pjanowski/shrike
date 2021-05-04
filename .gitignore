@@ -1,0 +1,7 @@
+*.egg-info
+.vscode
+__pycache__
+.coverage
+.venv/*
+.azureml
+dist

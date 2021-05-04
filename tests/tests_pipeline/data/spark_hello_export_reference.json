@@ -1,0 +1,218 @@
+{
+    "dataset_nodes": [
+        {
+            "additional_properties": {},
+            "data_path_parameter_name": null,
+            "data_set_definition": {
+                "additional_properties": {},
+                "data_type_short_name": "DataFrameDirectory",
+                "parameter_name": "curatedemailreplypairs_dataset",
+                "value": null
+            },
+            "dataset_id": null,
+            "id": "301d70f1"
+        }
+    ],
+    "default_compute": null,
+    "default_datastore": null,
+    "edges": [
+        {
+            "additional_properties": {},
+            "destination_input_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "636ff6b4",
+                "port_name": "input_path",
+                "web_service_port": null
+            },
+            "source_output_port": {
+                "additional_properties": {},
+                "graph_port_name": null,
+                "node_id": "301d70f1",
+                "port_name": "data",
+                "web_service_port": null
+            }
+        }
+    ],
+    "entity_interface": {
+        "additional_properties": {},
+        "data_path_parameter_list": [
+            {
+                "additional_properties": {},
+                "data_type_id": "DataFrameDirectory",
+                "default_value": {
+                    "additional_properties": {},
+                    "data_set_reference": {
+                        "additional_properties": {},
+                        "id": "c7219c07-79de-4cdc-bb36-3fe9c34f5f75",
+                        "name": null,
+                        "version": 1
+                    },
+                    "literal_value": null,
+                    "saved_data_set_reference": null
+                },
+                "documentation": null,
+                "is_optional": false,
+                "name": "curatedemailreplypairs_dataset"
+            }
+        ],
+        "data_path_parameters": [],
+        "metadata_parameters": null,
+        "parameters": [],
+        "ports": null
+    },
+    "module_node_run_settings": [
+        {
+            "additional_properties": {},
+            "module_id": "a7c3e789-f610-41ee-abff-bb6a3ab5659b",
+            "node_id": "636ff6b4",
+            "run_settings": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": [],
+                    "mlc_compute_type": "HDInsight",
+                    "name": "ComputeName",
+                    "use_graph_default_compute": false,
+                    "value": "hdi-cluster",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "Queue",
+                    "use_graph_default_compute": null,
+                    "value": null,
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "DriverMemory",
+                    "use_graph_default_compute": null,
+                    "value": "4g",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "DriverCores",
+                    "use_graph_default_compute": null,
+                    "value": 10,
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "ExecutorMemory",
+                    "use_graph_default_compute": null,
+                    "value": "3g",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "ExecutorCores",
+                    "use_graph_default_compute": null,
+                    "value": 10,
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "NumberExecutors",
+                    "use_graph_default_compute": null,
+                    "value": 10,
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "Conf",
+                    "use_graph_default_compute": null,
+                    "value": "{\"spark.yarn.maxAppAttempts\":\"1\",\"spark.yarn.appMasterEnv.PYSPARK_PYTHON\":\"/usr/bin/anaconda/envs/py35/bin/python3\",\"spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON\":\"/usr/bin/anaconda/envs/py35/bin/python3\"}",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "compute_run_settings": null,
+                    "mlc_compute_type": null,
+                    "name": "Name",
+                    "use_graph_default_compute": null,
+                    "value": null,
+                    "value_type": 0
+                }
+            ],
+            "step_type": "HDInsightModule"
+        }
+    ],
+    "module_nodes": [
+        {
+            "additional_properties": {},
+            "cloud_settings": null,
+            "comment": null,
+            "control_inputs": null,
+            "id": "636ff6b4",
+            "module_id": "a7c3e789-f610-41ee-abff-bb6a3ab5659b",
+            "module_input_settings": null,
+            "module_metadata_parameters": [],
+            "module_output_settings": [
+                {
+                    "additional_properties": {},
+                    "data_reference_name": "output_path",
+                    "data_store_mode": "mount",
+                    "data_store_name": "adlsgen1datastore",
+                    "dataset_output_options": null,
+                    "dataset_registration": null,
+                    "name": "output_path",
+                    "overwrite": null,
+                    "path_on_compute": null,
+                    "web_service_port": null
+                }
+            ],
+            "module_parameters": [
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "name": "in_file_type",
+                    "value": "parquet",
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "name": "percent_take",
+                    "value": 42,
+                    "value_type": 0
+                },
+                {
+                    "additional_properties": {},
+                    "assignments_to_concatenate": null,
+                    "name": "out_file_type",
+                    "value": "json",
+                    "value_type": 0
+                }
+            ],
+            "module_type": null,
+            "regenerate_output": null,
+            "runconfig": null,
+            "use_graph_default_compute": false,
+            "use_graph_default_datastore": null
+        }
+    ]
+}

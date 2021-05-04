@@ -1,0 +1,26 @@
+# Config for integration tests
+defaults:
+  - aml: amlds
+  - compute: amlds
+  - modules: samples_20210208
+
+run: # params for running pipeline
+  experiment_name: "integrationtests"
+  tags: '{"unit_test": True}'
+ 
+module_loader: # module loading params
+  use_local: "*"
+  force_default_module_version: null
+  force_all_module_version: null
+
+# config for runnable script
+# see get_config_class() in experiment runnable python script
+multinodetrainingexample:
+  train_encoded_data: "dummy_data"
+  train_encoded_data_version: "latest" # use this to pin a specific version
+  valid_encoded_data: "dummy_data"
+  valid_encoded_data_version: "latest" # use this to pin a specific version
+  vocab_data: "dummy_data"
+  vocab_data_version: "latest" # use this to pin a specific version
+
+  node_count: 8

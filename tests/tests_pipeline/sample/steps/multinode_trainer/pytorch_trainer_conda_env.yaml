@@ -1,0 +1,8 @@
+name: python_trainer_env
+dependencies:
+  - python=3.7
+  - pip:
+    - numpy==1.19.2
+    - torch==1.4.0
+    - azureml-defaults==1.13.0
+    - --index-url https://o365exchange.pkgs.visualstudio.com/_packaging/PolymerPythonPackages/pypi/simple/

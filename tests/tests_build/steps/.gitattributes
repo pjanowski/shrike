@@ -1,0 +1,7 @@
+# Force Linux-style line endings regardless of the "host" operating
+# system. This is needed to make sure hash-related tests are consistent
+# across Linux and Windows.
+# For more details on this file, see:
+# https://docs.github.com/en/github/using-git/configuring-git-to-handle-line-endings
+
+* text eol=lf

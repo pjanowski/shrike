@@ -1,0 +1,48 @@
+$schema: http://azureml/sdk-1-5/HDInsightComponent.json
+name: microsoft.com.office.kuri.sparkdotnetexample
+version: 0.0.1
+display_name: Spark.Net example
+type: HDInsightComponent
+description: |-
+  Aether module 3b7f0b0e-11f6-4cc7-8d85-19b7a23f5e4e. 
+  Contact: fuhui.fang@microsoft.com
+tags: {}
+inputs:
+  input_groundtruth:
+    type: AnyDirectory
+    optional: false
+  input_scraperesults:
+    type: AnyDirectory
+    optional: false
+  zipfile:
+    type: String
+    optional: false
+  binary_name:
+    type: String
+    optional: false
+outputs:
+  output_refinergains:
+    type: AnyDirectory
+  output_stats:
+    type: AnyDirectory
+  output_schema:
+    type: AnyDirectory
+hdinsight:
+  file: run.py
+  class_name: org.apache.spark.deploy.dotnet.DotnetRunner
+  jars:
+  - consumption-1.0-SNAPSHOT.jar
+  - microsoft-spark-2.3.x-0.10.0.jar
+  py_files:
+  # - kuri.zip
+  - Program.cs
+  - odinml.py
+  - AEtherModuleLabelRefinerSpark.zip
+  archives:
+  - AEtherModuleLabelRefinerSpark.zip#udfs
+  args: >-
+    --Input_GroundTruth {inputs.input_groundtruth} --Input_ScrapeResults {inputs.input_scraperesults}
+    --Output_RefinerGains {outputs.output_refinergains} --Output_Stats {outputs.output_stats}
+    --Output_Schema {outputs.output_schema} --ZipFile {inputs.zipfile} --BinaryName
+    {inputs.binary_name} --AppName AEtherModuleLabelRefinerSpark --AppGuid
+    20201120 --Cutoff 25 

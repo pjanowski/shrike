@@ -1,0 +1,9 @@
+$schema: http://azureml/sdk-2-0/CommandComponent.json
+
+name: valid_component
+
+version: 0.0.4
+
+type: CommandComponent
+
+command: pip freeze
