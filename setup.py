@@ -29,8 +29,11 @@ HERE = pathlib.Path(__file__).parent
 
 README = (HERE / "README.md").read_text()
 
-with open(HERE / "requirements.txt") as f:
-    required = versions_in_requirements(f)
+with open(HERE / "requirements-pipeline.txt") as f:
+    required_pipeline = versions_in_requirements(f)
+
+with open(HERE / "requirements-build.txt") as f:
+    required_build = versions_in_requirements(f)
 
 with open(HERE / "requirements-dev.txt") as f:
     required_dev = versions_in_requirements(f)
@@ -56,8 +59,12 @@ setup(
     ],
     packages=["shrike"],
     include_package_data=True,
-    install_requires=required,
-    extras_require={"dev": required_dev},
+    install_requires=[],
+    extras_require={
+        "pipeline": required_pipeline,
+        "build": required_build,
+        "dev": required_dev,
+    },
     # https://stackoverflow.com/a/48777286
     python_requires="~=3.6",
 )

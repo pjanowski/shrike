@@ -8,7 +8,7 @@ from shrike.build.utils import utils
 @pytest.mark.parametrize(
     "file_name,expected_hash",
     [
-        ("run.py", "806F6C4041AE57D2C068FF40DF45A362D4CE7B2C3D8C456C7E3E9FD4F93B9A78"),
+        ("run.py", "23715807DA0DE9F473FDE6A2AF9E1CF9A769EBD4E3E32659B10212972230BDDB"),
         (
             ".amlignore",
             "183C6C201CD9FC9C8D84FC40D1E496AC3716C4B31B5342F6B8659DA5949F1B45",

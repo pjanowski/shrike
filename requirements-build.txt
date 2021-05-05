@@ -1,0 +1,10 @@
+argparse-dataclass~=0.1
+# azure-identity~=1.5
+omegaconf~=2.0
+rsa~=4.7
+ruamel.yaml~=0.16
+semver~=2.13
+gitpython~=3.1
+
+# Telemetry logging
+opencensus-ext-azure==1.0.7
