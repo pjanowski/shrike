@@ -1,0 +1,75 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - main
+
+pool:
+  name: Vienna-DataScience-Combined-1ES
+  demands: ImageOverride -equals MMS2019
+
+variables:
+  directory: .
+  python_version: 3.8
+  # for aml workspace: aml1p-ml-eus2
+  service_connection: aml-ds-arm
+
+steps:
+
+- checkout: self
+  clean: true
+
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: $(python_version)
+
+- pwsh: |
+    pip install --upgrade pip
+    pip install .[pipeline,build,dev]
+  displayName: install dependencies
+  workingDirectory: $(directory)
+
+- pwsh: |
+    black --check $(directory)
+  displayName: lint (black)
+
+- pwsh: |
+    flake8 $(directory)
+  displayName: lint (flake8)
+
+# Reference:
+# https://dev.azure.com/eemo/TEE/_apps/hub/ms.vss-build-web.ci-designer-hub?pipelineId=345&branch=develop
+- task: AzureCLI@2
+  displayName: unit tests
+  inputs:
+    azureSubscription: $(service_connection)
+    scriptType: pscore
+    scriptLocation: inlineScript
+    inlineScript: |
+      python -m pytest tests/tests_build --junitxml=test-result.xml --cov=shrike --cov-report=xml --cov-report=html  -s
+    workingDirectory: $(directory)
+
+# https://www.codewrecks.com/post/old/2018/11/run-code-coverage-for-python-project-with-azure-devops/
+- task: PublishCodeCoverageResults@1
+  displayName: publish code coverage
+  condition: succeededOrFailed()
+  inputs:
+    codeCoverageTool: Cobertura
+    failIfCoverageEmpty: true
+    summaryFileLocation: '**/coverage.xml'
+
+- pwsh: |
+    python setup.py sdist bdist_wheel
+  displayName: build wheel
+  workingDirectory: $(directory)
+
+# https://gunnarpeipman.com/azure-devops-check-code-coverage/
+- task: BuildQualityChecks@8
+  displayName: check code coverage
+  inputs:
+    baseBranchRef: $(Build.SourceBranch)
+    checkCoverage: true
+    coverageType: lines
+    forceCoverageImprovement: true
+    coverageThreshold: 50
+    coverageUpperThreshold: 90

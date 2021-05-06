@@ -18,14 +18,18 @@ import pytest
 from ruamel import yaml
 from azure.ml.component._core._component_definition import CommandComponentDefinition
 
-from .importer import import_and_test_class
-from .importer import dynamic_import_module
-from .components import component_spec_yaml_exists_and_is_parsable
-from .components import component_uses_private_acr
-from .components import component_uses_private_python_feed
-from .components import component_run_py_import
-from .components import component_run_get_arg_parser
-from .components import if_arguments_from_component_spec_match_script_argparse
+from shrike.pipeline.testing.importer import (
+    import_and_test_class,
+    dynamic_import_module,
+)
+from shrike.pipeline.testing.components import (
+    component_spec_yaml_exists_and_is_parsable,
+    component_uses_private_acr,
+    component_uses_private_python_feed,
+    component_run_py_import,
+    component_run_get_arg_parser,
+    if_arguments_from_component_spec_match_script_argparse,
+)
 
 
 def module_spec_yaml_exists_and_is_parsable(module):

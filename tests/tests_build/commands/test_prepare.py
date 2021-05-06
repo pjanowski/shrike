@@ -275,7 +275,7 @@ def test_validate_all_components_code_snapshot_parameter(caplog):
     assert prep._component_statuses[tmp_dir + "/spec.yaml"]["validate"] == "failed"
     assert len(prep._errors) == 1
     assert (
-        "Code snapshot parameter is not supported by aml-build-tooling. Please use .additional_includes for your component."
+        "Code snapshot parameter is not supported. Please use .additional_includes for your component."
         in caplog.text
     )
 
@@ -303,7 +303,7 @@ def test_validate_all_components_code_Section(caplog):
     assert not prep._errors
     assert "is valid" in caplog.text
     assert (
-        "Code snapshot parameter is not supported by aml-build-tooling. Please use .additional_includes for your component."
+        "Code snapshot parameter is not supported. Please use .additional_includes for your component."
         not in caplog.text
     )
 

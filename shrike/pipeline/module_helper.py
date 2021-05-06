@@ -10,7 +10,7 @@ import os
 
 from azure.ml.component import Component
 
-from .aml_connect import current_workspace
+from shrike.pipeline.aml_connect import current_workspace
 
 from dataclasses import dataclass, field
 from omegaconf import MISSING

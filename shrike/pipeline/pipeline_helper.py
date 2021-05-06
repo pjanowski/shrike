@@ -28,12 +28,12 @@ from azure.ml.component._core._component_definition import (
     ComponentType,
 )
 
-from .. import __version__
-from .aml_connect import azureml_connect, current_workspace
-from .canary_helper import get_repo_info
-from .module_helper import AMLModuleLoader, module_loader_config
-from .pipeline_config import default_config_dict
-from .telemetry_utils import TelemetryLogger
+from shrike import __version__
+from shrike.pipeline.aml_connect import azureml_connect, current_workspace
+from shrike.pipeline.canary_helper import get_repo_info
+from shrike.pipeline.module_helper import AMLModuleLoader, module_loader_config
+from shrike.pipeline.pipeline_config import default_config_dict
+from shrike.pipeline.telemetry_utils import TelemetryLogger
 
 
 class AMLPipelineHelper:

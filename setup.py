@@ -21,7 +21,6 @@ def versions_in_requirements(file):
         # https://stackoverflow.com/a/2405300
         if not line.isspace() and "--" not in line
     ]
-
     return list(versions)
 
 
@@ -29,13 +28,13 @@ HERE = pathlib.Path(__file__).parent
 
 README = (HERE / "README.md").read_text()
 
-with open(HERE / "requirements-pipeline.txt") as f:
+with open(HERE / "requirements/requirements-pipeline.txt") as f:
     required_pipeline = versions_in_requirements(f)
 
-with open(HERE / "requirements-build.txt") as f:
+with open(HERE / "requirements/requirements-build.txt") as f:
     required_build = versions_in_requirements(f)
 
-with open(HERE / "requirements-dev.txt") as f:
+with open(HERE / "requirements/requirements-dev.txt") as f:
     required_dev = versions_in_requirements(f)
 
 setup(

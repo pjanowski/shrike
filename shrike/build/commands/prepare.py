@@ -264,7 +264,7 @@ CATATTR1=0x00010001:OSAttr:2:6.2
                 if spec_code and spec_code not in [".", "./"]:
                     self.register_component_status(component, "validate", "failed")
                     self.register_error(
-                        "Code snapshot parameter is not supported by aml-build-tooling. Please use .additional_includes for your component."
+                        "Code snapshot parameter is not supported. Please use .additional_includes for your component."
                     )
                 else:
                     log.info(f"Component {component} is valid.")

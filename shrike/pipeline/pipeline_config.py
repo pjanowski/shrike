@@ -5,7 +5,7 @@
 from dataclasses import dataclass
 from omegaconf import MISSING
 from typing import Optional, Any
-from .module_helper import module_loader_config, module_manifest
+from shrike.pipeline.module_helper import module_loader_config, module_manifest
 
 
 @dataclass

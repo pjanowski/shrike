@@ -22,8 +22,10 @@ from azure.ml.component._core._component_definition import (
     ComponentType,
 )
 
-from .importer import import_and_test_class
-from .importer import dynamic_import_module
+from shrike.pipeline.testing.importer import (
+    import_and_test_class,
+    dynamic_import_module,
+)
 
 
 def component_spec_yaml_exists_and_is_parsable(component_spec_path):
