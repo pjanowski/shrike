@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """
 Constructor for a test pipeline for SmartCompose.
 """

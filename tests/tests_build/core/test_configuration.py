@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 from shrike.build.core.configuration import load_configuration_from_args_and_env
 
 

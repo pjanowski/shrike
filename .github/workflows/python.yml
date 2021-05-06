@@ -1,0 +1,104 @@
+name: python
+
+on:
+  push:
+    branches: [main]
+    tags: [ 'v1.*' ]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        # https://ncorti.com/blog/howto-github-actions-build-matrix
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        # python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: [3.6, 3.7, 3.8]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v2
+      # Keep entire history for better code coverage reports.
+      with:
+        fetch-depth: 0
+    - name: Check License Lines
+      uses: kt3k/license_checker@v1.0.6
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2.2.1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: pip install
+      run: |
+        python -m pip install --upgrade pip
+        pip install .[pipeline,build,dev]
+    - name: black
+      run: |
+        black --check .
+    - name: flake8
+      run: |
+        flake8 .
+      if: always()
+    # See: https://github.com/codecov/example-python
+    - name: pytest
+      run: |
+        python -m pytest tests/tests_confidential_logging --cov --junitxml=test-logging-result.xml
+      if: always()
+    - name: publish test results
+      if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
+      uses: EnricoMi/publish-unit-test-result-action@v1.9
+      with:
+        check_name: Unit Test Results for Logging
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        files: test-logging-result.xml
+    - name: upload code coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+      if: ${{ always() && matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}
+
+    # This and the next step follow:
+    # https://gist.github.com/alukach/6f3a371e9af600e417aca1b36806ad72
+    - name: setup node.js for pyright
+      uses: actions/setup-node@v2.1.5
+      with:
+        node-version: 12
+    - name: pyright
+      run: |
+        npm install -g pyright
+        pyright
+
+    - name: build wheel
+      run: |
+        python setup.py sdist bdist_wheel
+    - name: upload wheel
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: download wheel
+      uses: actions/download-artifact@v2
+
+    # Follow:
+    # https://packaging.python.org/guides/publishing-package-distribution-releases-using-github-actions-ci-cd-workflows/
+    # to publish the generated wheel to pypi.org. You may optionally remove the
+    # 'if' condition, and add a 'with'
+    # repository_url: https://test.pypi.org/legacy, and use the password
+    # test_pypi_password to verify that publication to test.pypi.org works.
+    - name: publish to test pypi
+      # if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.test_pypi_token }}
+        repository_url: https://test.pypi.org/legacy/

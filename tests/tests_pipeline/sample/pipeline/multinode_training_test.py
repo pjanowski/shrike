@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """
 This runnable graph can be used to create and store an LSTM model
 from existing train/valid encoded datasets and vocabulary.

@@ -1,0 +1,12 @@
+# https://flake8.pycqa.org/en/2.5.5/config.html
+
+[flake8]
+# Same as Black:
+# https://black.readthedocs.io/en/stable/the_black_code_style.html#line-length
+max-line-length = 88
+
+exclude = 
+    docs, 
+    tests, 
+    shrike/build,
+    shrike/pipeline

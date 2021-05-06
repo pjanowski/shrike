@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """Ran before all unittests in directory, initializes shared global variables"""
 import os
 import pytest

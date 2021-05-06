@@ -1,0 +1,10 @@
+{
+    "shrike/**/*.py": [
+        "# Copyright (c) Microsoft Corporation.",
+        "# Licensed under the MIT license."
+    ],
+    "tests/**/*.py": [
+        "# Copyright (c) Microsoft Corporation.",
+        "# Licensed under the MIT license."
+    ]
+}

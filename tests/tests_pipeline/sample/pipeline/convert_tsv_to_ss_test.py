@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """
 This runnable graph can be used to onvert a tsv to cosmos ss.
 """

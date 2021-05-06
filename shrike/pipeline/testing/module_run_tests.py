@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """
 PyTest suite for testing if run.py is aligned with module specification:
 

@@ -19,7 +19,7 @@ def versions_in_requirements(file):
         line
         for line in lines
         # https://stackoverflow.com/a/2405300
-        if not line.isspace() and not "--" in line
+        if not line.isspace() and "--" not in line
     ]
 
     return list(versions)

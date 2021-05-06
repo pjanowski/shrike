@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 import logging
 from opencensus.ext.azure.log_exporter import AzureLogHandler
 

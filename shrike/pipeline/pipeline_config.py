@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ Configuration dataclasses for AMLPipelineHelper """
 from dataclasses import dataclass
 from omegaconf import MISSING

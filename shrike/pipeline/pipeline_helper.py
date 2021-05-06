@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """
 Pipeline helper class to create pipelines loading modules from a flexible manifest.
 

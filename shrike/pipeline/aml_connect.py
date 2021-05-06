@@ -1,3 +1,6 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT license.
+
 """ Helper code for connecting to AzureML and sharing one workspace accross code. """
 import os
 import argparse
