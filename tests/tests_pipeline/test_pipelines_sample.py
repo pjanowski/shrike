@@ -28,6 +28,16 @@ PIPELINE_CLASSES = [
 ]
 
 
+@pytest.fixture()
+def pipeline_config_path():
+    """Locates the pipeline config folder for unit tests.
+
+    Returns:
+        str: path to config file in temporary folder
+    """
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample", "conf")
+
+
 @pytest.mark.parametrize("pipeline_class", PIPELINE_CLASSES)
 def test_pipeline_classes_get_config_class(pipeline_class):
     """Test if the get_arg_parser() method is in there and behaves correctly"""

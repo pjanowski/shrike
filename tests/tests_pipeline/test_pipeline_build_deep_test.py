@@ -8,6 +8,7 @@ import os
 import sys
 from unittest.mock import patch
 import json
+import pytest
 
 from shrike.pipeline.testing.pipeline_class_test import (
     get_config_class,
@@ -22,10 +23,22 @@ from .sample.pipeline.spark_hello import SparkHelloPipeline
 from .sample.pipeline.convert_tsv_to_ss_test import ConvertTsvToSSPipeline
 
 
-def test_spark_hello_build_deep_test(pipeline_config_path, temporary_directory):
+@pytest.fixture()
+def pipeline_config_path():
+    """Locates the pipeline config folder for unit tests.
+
+    Returns:
+        str: path to config file in temporary folder
+    """
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "sample", "conf")
+
+
+def test_spark_hello_build_deep_test(pipeline_config_path):
     """Tests the graph by running the main function itself (which does .validate())"""
     # path where to generate the tested graph
-    json_export_path = os.path.join(temporary_directory, "spark_hello_graph.json")
+    json_export_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "spark_hello_graph.json"
+    )
 
     # arguments for the main function
     testargs = [
@@ -60,10 +73,12 @@ def test_spark_hello_build_deep_test(pipeline_config_path, temporary_directory):
     )
 
 
-def test_stats_passthrough_build_deep_test(pipeline_config_path, temporary_directory):
+def test_stats_passthrough_build_deep_test(pipeline_config_path):
     """Tests the graph by running the main function itself (which does .validate())"""
     # path where to generate the tested graph
-    json_export_path = os.path.join(temporary_directory, "stats_passthrough_graph.json")
+    json_export_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "stats_passthrough_graph.json"
+    )
 
     # arguments for the main function
     testargs = [
@@ -95,11 +110,11 @@ def test_stats_passthrough_build_deep_test(pipeline_config_path, temporary_direc
     )
 
 
-def test_multinode_training_build_deep_test(pipeline_config_path, temporary_directory):
+def test_multinode_training_build_deep_test(pipeline_config_path):
     """Tests the graph by running the main function itself (which does .validate())"""
     # path where to generate the tested graph
     json_export_path = os.path.join(
-        temporary_directory, "multinode_training_graph.json"
+        os.path.dirname(os.path.abspath(__file__)), "multinode_training_graph.json"
     )
 
     # arguments for the main function
@@ -134,10 +149,12 @@ def test_multinode_training_build_deep_test(pipeline_config_path, temporary_dire
     )
 
 
-def test_convert_tsv_to_ss(pipeline_config_path, temporary_directory):
+def test_convert_tsv_to_ss(pipeline_config_path):
     """Tests the graph by running the main function itself (which does .validate())"""
     # path where to generate the tested graph
-    json_export_path = os.path.join(temporary_directory, "convert_tsv_to_ss_test.json")
+    json_export_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "convert_tsv_to_ss_test.json"
+    )
 
     # arguments for the main function
     testargs = [
