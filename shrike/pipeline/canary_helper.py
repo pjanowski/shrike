@@ -3,8 +3,6 @@
 
 """
 Canary helper code
-
-> Status: this code is related to the _Recipe_ and is a _proposition_
 """
 import os
 

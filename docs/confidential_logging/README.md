@@ -1,8 +1,3 @@
-## Installation
-
-Install the latest version in your Python environment from `PyPi`:
-[shrike](https://pypi.org/project/shrike/).
-
 ## Exception Handling
 
 First execute `pip install shrike` to install this library. Then
@@ -32,7 +27,7 @@ functionality as before! Add a `category=DataCategory.PUBLIC` argument to have
 your log lines prefixed with `SystemLog:`. Here is a full-fledged example:
 
 ```python
-{!docs/logging/data-category.py!}
+{!docs/confidential_logging/data-category.py!}
 ```
 
 ## Examples
@@ -40,7 +35,7 @@ your log lines prefixed with `SystemLog:`. Here is a full-fledged example:
 The simplest use case (wrap your `main` method in a decorator) is:
 
 ```python
-{!docs/logging/hello-world.py!}
+{!docs/confidential_logging/hello-world.py!}
 ```
 
 ### Prefixing stack trace
@@ -52,7 +47,7 @@ Some configuration options around prefixing the stack trace. You can:
 exception type regex match one of the allow_list strings.
 
 ```python
-{!docs/logging/prefix-stack-trace.py!}
+{!docs/confidential_logging/prefix-stack-trace.py!}
 ```
 
 ### With statements
@@ -60,7 +55,7 @@ exception type regex match one of the allow_list strings.
 Use this library with `with` statements:
 
 ```python
-{!docs/logging/with-statement.py!}
+{!docs/confidential_logging/with-statement.py!}
 ```
 
 ### Directly with try / except statements
@@ -68,7 +63,7 @@ Use this library with `with` statements:
 Using this library directly inside `try` / `except` statements:
 
 ```python
-{!docs/logging/try-except.py!}
+{!docs/confidential_logging/try-except.py!}
 ```
 
 ### Public exception types
@@ -76,7 +71,7 @@ Using this library directly inside `try` / `except` statements:
 Using the `Public*` exception types:
 
 ```python
-{!docs/logging/public-exceptions.py!}
+{!docs/confidential_logging/public-exceptions.py!}
 ```
 
 ## Exception or Stack trace parsing

@@ -1,0 +1,1 @@
+::: shrike.pipeline.testing.pipeline_class_test

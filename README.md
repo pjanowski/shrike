@@ -1,6 +1,8 @@
 # Shrike: Compliant Azure ML Utilities
 
 [![CodeQL](https://github.com/Azure/shrike/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Azure/shrike/actions/workflows/codeql-analysis.yml)
+[![docs](https://github.com/Azure/shrike/actions/workflows/docs.yml/badge.svg)](https://github.com/Azure/shrike/actions/workflows/docs.yml)
+[![python](https://github.com/Azure/shrike/actions/workflows/python.yml/badge.svg)](https://github.com/Azure/shrike/actions/workflows/python.yml)
 [![Component Governance](https://dev.azure.com/msdata/Vienna/_apis/build/status/aml-ds/Azure.shrike%20Component%20Governance?branchName=main)](https://dev.azure.com/msdata/Vienna/_build/latest?definitionId=16088&branchName=main)
 [![ci-gate](https://dev.azure.com/msdata/Vienna/_apis/build/status/aml-ds/Azure.shrike%20ci-gate?branchName=main)](https://dev.azure.com/msdata/Vienna/_build/latest?definitionId=16115&branchName=main)
 [![Python versions](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
@@ -8,35 +10,52 @@
 [![codecov](https://codecov.io/gh/Azure/shrike/branch/main/graph/badge.svg?token=sSq0BKlfTu)](https://codecov.io/gh/Azure/shrike)
 [![license: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
-Confidential ML is the practice of training machine learning models without
-seeing the training data. It is needed in many enterprises to satisfy the
-strict compliance and privacy guarantees they provide to their customers. This
-repository contains a set of utilities for confidential ML, with a special
-emphasis on using PyTorch in
-[Azure Machine Learning pipelines](https://github.com/Azure/azureml-examples).
- 
-## Using
+Compliant Machine Learning is the practice of training, validating and deploying
+machine learning models withou seeing the private data. It is needed in many
+enterprises to satsify the strict compliance and privacy guarantees that 
+they provide to their customers.
 
-For more detailed examples and API reference, see the
-[docs page]().
+The library `shrike` is a set of Python utilities for compliant machine
+learning, with a special emphasis on running pipeline in the platform of 
+[Azure Machine Learning](https://github.com/Azure/azureml-examples). This
+library mainly contains three components, that are
 
-Minimal use case:
+-  `shrike.confidential_logging`: utlities for confidential logging and 
+exception handling;
+-  `shrike.pipeline`: helper code for manging, validating and submitting Azure
+Machine Learning pipelines based on 
+[azure-ml-component](https://componentsdk.z22.web.core.windows.net/index.html);
+-  `shrike.build`: helper code for packaging, building, validating, signing and
+registering Azure Machine Learning components.
 
-```python
-from shrike.confidential_logging import DataCategory, enable_confidential_logging, prefix_stack_trace
-import logging
+## Documentation
+For the full documentation of `shrike` with detailed examples and API reference, 
+please see the [docs page](http://azure.github.io/shrike).
 
 
-@prefix_stack_trace(allow_list=["FileNotFoundError", "SystemExit", "TypeError"])
-def main():
-    enable_confidential_logging()
-
-    log = logging.getLogger(__name__)
-    log.info("Hi there", category=DataCategory.PUBLIC)
-
-if __name__ == "__main__":
-    main()
+## Installation
+To install via PyPi, please type:
+```pwsh
+pip install shrike[pipeline,build]
 ```
+There are three optional extra dependenciies - `pipeline`, `build` and `dev`, 
+among which `dev` is for the development environment of shrike. 
+If only the confidential-logging feature would be used, please 
+just type without any extras:
+```pwsh
+pip install shrike
+```
+
+## Need Support?
+When you have any feature requests or technical questions or find
+any bugs, please don't hesitate to contact the Azure ML Data Science
+Team.
+
+- If you are Microsoft employees, please refer to the 
+[support page](https://aka.ms/aml/support) for details;
+- If you are outside Microsoft, feel free to send an email
+to [aml-ds@microsoft.com](mailto:aml-ds@microsoft.com). 
+
 
 ## Contributing
 

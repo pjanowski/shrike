@@ -3,8 +3,6 @@
 
 """
 Pipeline helper class to create pipelines loading modules from a flexible manifest.
-
-> Status: this code is related to the _DS experience_ and is a _proposition_
 """
 import os
 import json
@@ -790,11 +788,7 @@ class AMLPipelineHelper:
         )  # NOTE: this also stores aml workspace in internal global variable
 
     def run(self):
-        """Run pipeline using arguments
-
-        Raises:
-            Exception is optional required arguments are not present
-        """
+        """Run pipeline using arguments"""
         # Log the telemetry information in the Azure Application Insights
         telemetry_logger = TelemetryLogger(
             enable_telemetry=not self.config.run.disable_telemetry

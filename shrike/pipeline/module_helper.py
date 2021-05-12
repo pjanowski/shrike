@@ -3,8 +3,6 @@
 
 """
 Pipeline helper class to create pipelines loading modules from a flexible manifest.
-
-> Status: this code is related to the _DS experience_ and is a _proposition_
 """
 import os
 

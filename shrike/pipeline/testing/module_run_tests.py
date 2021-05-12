@@ -3,8 +3,6 @@
 
 """
 PyTest suite for testing if run.py is aligned with module specification:
-
-> Status: this code relates to the _recipe_ and is a _proposition_
 """
 import os
 import sys

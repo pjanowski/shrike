@@ -1,0 +1,42 @@
+site_name: Shrike
+
+nav:
+- Home: index.md
+- Confidential Logging:
+    Logging examples: confidential_logging/README.md
+    Logging design: confidential_logging/rfc-logging.md
+    API reference:
+      constants: confidential_logging/constants.md
+      exceptions: confidential_logging/exceptions.md
+      logging: confidential_logging/logging.md
+- Build:
+    Sign & register components: build/build-for-sign-and-register.md
+    API reference:
+      prepare: build/prepare.md
+      register: build/register.md
+- Pipeline:
+    Create an AML pipeline: pipeline/create-aml-pipeline.md
+    Configure your AML pipeline: pipeline/configure-aml-pipeline.md
+    Reuse your AML pipeline: pipeline/reuse-aml-pipeline.md
+    API reference:
+      pipeline_helper: pipeline/pipeline-helper.md
+      module_helper: pipeline/module-helper.md
+      canary_helper: pipeline/canary-helper.md
+      aml_connect: pipeline/aml-connect.md
+      testing.componets: pipeline/testing-components.md
+      testing.importer: pipeline/testing-importer.md
+      testing.module_run_tests: pipeline/testing-module-run-tests.md
+      testing.pipeline_class_test: pipeline/testing-pipeline-class-test.md
+    
+
+theme:
+  name: material
+
+markdown_extensions:
+# https://github.com/mkdocs/mkdocs/issues/777
+- markdown_include.include:
+    base_path: .
+
+plugins:
+- search
+- mkdocstrings

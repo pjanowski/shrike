@@ -3,8 +3,6 @@
 
 """
 PyTest suite for testing all module specification:
-
-> Status: this code relates to the _recipe_ and is a _proposition_
 """
 import traceback
 import pytest
