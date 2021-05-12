@@ -95,10 +95,8 @@ jobs:
     # 'if' condition, and add a 'with'
     # repository_url: https://test.pypi.org/legacy, and use the password
     # test_pypi_password to verify that publication to test.pypi.org works.
-    - name: publish to test pypi
+    - name: publish to pypi
       if: startsWith(github.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
       with:
-        user: __token__
-        password: ${{ secrets.test_pypi_token }}
-        repository_url: https://test.pypi.org/legacy/
+        password: ${{ secrets.pypi_password }}
