@@ -33,9 +33,15 @@ theme:
   name: material
 
 markdown_extensions:
+- pymdownx.highlight:
+    linenums: true
+    linenums_style: pymdownx-inline
+- pymdownx.superfences
+- pymdownx.snippets
 # https://github.com/mkdocs/mkdocs/issues/777
 - markdown_include.include:
     base_path: .
+
 
 plugins:
 - search
