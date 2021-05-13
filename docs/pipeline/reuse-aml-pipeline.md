@@ -181,13 +181,13 @@ If you want to pin down a specific version number for some particular modules, s
 manifest:
   # ...
   - key: "LMPytorchTrainer"
-    name: "microsoft.com/office/smartcompose://[SC] [AML] PyTorch LM Trainer"
+    name: "[SC] [AML] PyTorch LM Trainer"
     version: null # <<< HERE
     yaml: "pytorch_trainer/module_spec.yaml"
   # ...
 ```
 
-or hardcode it (not recommende) in your `required_modules()` method:
+or hardcode it (not recommended) in your `required_modules()` method:
 
 ```python
    @classmethod

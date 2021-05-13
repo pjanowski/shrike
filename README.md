@@ -8,6 +8,8 @@
 [![Python versions](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![codecov](https://codecov.io/gh/Azure/shrike/branch/main/graph/badge.svg?token=sSq0BKlfTu)](https://codecov.io/gh/Azure/shrike)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/shrike)](https://pypi.org/project/shrike/)
+[![PyPI version](https://badge.fury.io/py/shrike.svg)](https://badge.fury.io/py/shrike)
 [![license: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
 Compliant Machine Learning is the practice of training, validating and deploying
@@ -24,7 +26,7 @@ library mainly contains three components, that are
 exception handling;
 -  `shrike.pipeline`: helper code for manging, validating and submitting Azure
 Machine Learning pipelines based on 
-[azure-ml-component](https://componentsdk.z22.web.core.windows.net/index.html);
+[azure-ml-component](https://aka.ms/azure-ml-component-reference);
 -  `shrike.build`: helper code for packaging, building, validating, signing and
 registering Azure Machine Learning components.
 
@@ -48,8 +50,7 @@ pip install shrike
 
 ## Need Support?
 When you have any feature requests or technical questions or find
-any bugs, please don't hesitate to contact the Azure ML Data Science
-Team.
+any bugs, please don't hesitate to file issues.
 
 - If you are Microsoft employees, please refer to the 
 [support page](https://aka.ms/aml/support) for details;

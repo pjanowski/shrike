@@ -3,22 +3,22 @@
 By reading through this doc, you will be able to
 
 - have a high-level understanding of how to use `shrike.build`, and 
-- create a **single-yaml** pipeline build in Azure DevOps for validating, signing and registering AML components.
+- create a **single-YAML** pipeline build in Azure DevOps for validating, signing and registering AML components.
 
 ## Requirements
 
 To enjoy this tutorial, you need to 
 
--  have at least one [AML component yaml specification file](https://componentsdk.azurewebsites.net/components/command_component.html#how-to-write-commandcomponent-yaml-spec) in your team's repository,
+-  have at least one [AML component YAML specification file](https://componentsdk.azurewebsites.net/components/command_component.html#how-to-write-commandcomponent-yaml-spec) in your team's repository,
 -  have an [AML service connection](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml) set up in your Azure DevOps for your Azure subscription,
 -  have an [ESRP service connection](https://microsoft.sharepoint.com/teams/prss/esrp/info/ESRP%20Onboarding%20Wiki/ESRP%20Onboarding%20Guide%20Wiki.aspx) set up in your Azure DevOps, and
--  have a basic knowledge of Azure DevOps pipeline [yaml schema](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema).
+-  have a basic knowledge of Azure DevOps pipeline [YAML schema](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema).
 
 
 ## Configuration
-Command line arguments and configuration yaml file are both supported by `shrike.build`. The order of precedence from least to greatest (the last listed variables override all other variables) is: default values, configuration file, command line arguments.
+Command line arguments and configuration YAML file are both supported by `shrike.build`. The order of precedence from least to greatest (the last listed variables override all other variables) is: default values, configuration file, command line arguments.
 
-An example of configuration yaml file:
+An example of configuration YAML file:
 ```yaml
 # Choose from two signing mode: aml, or aether
 signing_mode: aml
@@ -88,9 +88,9 @@ In this section, we briefly describe the workflow of the `prepare` command in th
 
 > Note: While building "active" components, all additional dependency files specified in `.additional_includes` will be copied into the component build folder by 
 the `prepare` command. However, for those dependecy files that are not checked into the repository, such as Odinmal Jar (from NuGet packages) and .zip files, we need to write extra "tasks" to 
-copy them into the component build folder. Please refer to [Email Triage AML components signing and registering pipeline](https://eemo.visualstudio.com/TEE/_build?definitionId=517) for details.
+copy them into the component build folder.
 
-A sample yaml script of preparation step
+A sample YAML script of preparation step
 
 ```yaml
 - task: AzureCLI@2
@@ -149,7 +149,7 @@ There are five configuration parameters related with registration step: `--compl
 - If `all_component_version` is not `None`, the value of `all_component_version` is used as the version number for all signed components.
 - If `use_build_number` is True, the build number is used as the version number for all signed components (Overriding the value of `all_component_version` if `all_component_version` is not `None`).
 
-A sample yaml task for registration is 
+A sample YAML task for registration is 
 ```yaml
 - task: AzureCLI@2
     displayName: AML Component Registration
@@ -181,8 +181,6 @@ signing_mode: aether
 and then run a code signing step like this just after the "prepare" command. Note: your ESRP service connection will need to have access to the `CP-230012` key, otherwise you'll encounter the error described in:
 
 > [Got unauthorized to access CP-230012 when calling Aether-style signing service](https://stackoverflow.microsoft.com/a/256540/)
-
-If your code is in the TEEGit repo, you should imitate the [legacy &AElig;ther-style Smart Reply build](https://dev.azure.com/eemo/TEE/_apps/hub/ms.vss-ciworkflow.build-ci-hub?_a=edit-build-definition&id=308) and use the `AutoPilot Exchange ESRP CodeSign CAT files` service connection for &AElig;ther-style code signing.
 
 ```yaml
 - task: EsrpCodeSigning@1
@@ -233,12 +231,3 @@ For reference, you may imitate [this build used by the AML Data Science team](ht
 
 _Note:_ there is no need to run the AML-style and &AElig;ther-style code signing in separate jobs. So long as they both run in a Windows VM, it may be the same job.
 
-## Links
-
-This section bundles together links that should be helpful for AML users.
-
-- [Email Triage AML components signing and registering pipeline](https://eemo.visualstudio.com/TEE/_build?definitionId=517)
-- [Design documentation of Rufous phase 3 component build & registration tooling](https://dev.azure.com/msdata/Vienna/_git/aml-ds-internal?path=%2Fdocs%2Frfc%2F12-rufous-phase-3-build-tool.md&version=GBmain&_a=preview)
-- [Integrate the ESRP CodeSign Task into ADO](https://microsoft.sharepoint.com/teams/prss/esrp/info/ESRP%20Onboarding%20Wiki/Integrate%20the%20ESRP%20CodeSign%20Task%20into%20ADO.aspx)
-- [Manage service connections](https://docs.microsoft.com/en-us/azure/devops/pipelines/library/service-endpoints?view=azure-devops&tabs=yaml)
-- [Azure DevOps Pipeline YAML](https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema)
