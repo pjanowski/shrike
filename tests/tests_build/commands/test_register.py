@@ -73,7 +73,7 @@ def test_find_signed_component_specification_files(caplog, mode):
         assert "Find a signed component for Aether:" in caplog.text
         assert "Cannot find any signed components for AML." in caplog.text
     elif mode == "aml":
-        assert "Find 5 signed components for AML." in caplog.text
+        assert "Find 4 signed components for AML." in caplog.text
     else:
         assert "Cannot find any signed components for AML." in caplog.text
 
@@ -102,7 +102,7 @@ def test_register_all_signed_components_already_exist_component_version(caplog):
     # Create a temporary component folder and generate a random float number as
     # the version number so that we can "almost surely" have a new version number
     # every time we re-run this unit test.
-    tmp_dir = str(Path(__file__).parent.parent.resolve() / "steps/tmp_dir")
+    tmp_dir = str(get_target_path_in_steps_directory("component4/tmp_dir"))
     random_version_number = str(uniform(0.1, 1.0))
     tmp_yaml = {
         "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
@@ -129,10 +129,10 @@ def test_register_all_signed_components_already_exist_component_version(caplog):
     reg.attach_workspace(CANARY_WORKSPACE)
 
     already_exist_component_path = str(
-        Path(__file__).parent.parent.resolve() / "steps/.build/spec.yaml"
+        get_target_path_in_steps_directory("component4/.build/spec.yaml")
     )
     not_yet_exist_component_path = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec.yaml"
+        get_target_path_in_steps_directory("component4/tmp_dir/.build/spec.yaml")
     )
     with caplog.at_level("INFO"):
         reg.register_all_signed_components(
@@ -144,7 +144,7 @@ def test_register_all_signed_components_already_exist_component_version(caplog):
     )
     assert len(reg._errors) == 1
     assert (
-        "(UserError) Version 0.0.1 already exists in component microsoft.com.office.kuri.sparkdotnetexample."
+        "(UserError) Version 0.0.1 already exists in component convert2ss."
         in caplog.text
     )
     assert '"displayName": "dummy_component"' in caplog.text
@@ -184,14 +184,14 @@ def test_register_all_signed_components_use_build_number(caplog):
     reg.attach_workspace(CANARY_WORKSPACE)
 
     component_path = str(
-        Path(__file__).parent.parent.resolve() / "steps/.build/spec.yaml"
+        get_target_path_in_steps_directory("component4/.build/spec.yaml")
     )
     with caplog.at_level("INFO"):
         reg.register_all_signed_components([component_path])
 
     assert reg._component_statuses[component_path]["register"] == "succeeded"
     assert len(reg._errors) == 0
-    assert '"displayName": "Spark.Net example"' in caplog.text
+    assert '"displayName": "Convert Text to StructureStream"' in caplog.text
     assert (
         f"Overwrite the component version with the specified value {build_number}"
         in caplog.text
@@ -211,7 +211,7 @@ def test_set_default_version(caplog):
     # Create a temporary component folder and generate a random float number as
     # the version number so that we can "almost surely" have a new version number
     # every time we re-run this unit test.
-    tmp_dir = str(Path(__file__).parent.parent.resolve() / "steps/tmp_dir")
+    tmp_dir = str(get_target_path_in_steps_directory("tmp_dir"))
     random_version_number = str(uniform(0.1, 1.0)) + ".0"
     tmp_yaml = {
         "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
@@ -247,10 +247,10 @@ def test_set_default_version(caplog):
     reg.attach_workspace(CANARY_WORKSPACE)
 
     production_ready_component_path = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec.yaml"
+        get_target_path_in_steps_directory("tmp_dir/.build/spec.yaml")
     )
     not_production_ready_component_path = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec2.yaml"
+        get_target_path_in_steps_directory("tmp_dir/.build/spec2.yaml")
     )
 
     with caplog.at_level("INFO"):
@@ -289,12 +289,12 @@ def test_read_component_version(caplog):
     reg.config = Configuration()
 
     reg.read_component_version("tests/tests_build/steps/component3/spec.yaml")
-    reg.read_component_version("tests/tests_build/steps/spec.yaml")
+    reg.read_component_version("tests/tests_build/steps/component2/spec.yaml")
     assert (
         "Component does not have version attribute, attempting to read module version."
         in caplog.text
     )
-    assert "Component test/steps/spec.yaml has version 0.0.1."
+    assert "Component tests/tests_build/steps/spec.yaml has version 0.0.4."
 
     # Clean
     subprocess.run(["git", "clean", "-xdf"])
@@ -308,7 +308,7 @@ def test_register_component_command(caplog):
     # Create a temporary component folder and generate a random float number as
     # the version number so that we can "almost surely" have a new version number
     # every time we re-run this unit test.
-    tmp_dir = str(Path(__file__).parent.parent.resolve() / "steps/tmp_dir")
+    tmp_dir = str(get_target_path_in_steps_directory("tmp_dir"))
     random_version_number = str(uniform(0.1, 1.0))
     tmp_yaml = {
         "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
@@ -353,13 +353,13 @@ def test_register_component_command(caplog):
     reg.attach_workspace(CANARY_WORKSPACE)
 
     component_path_1 = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec.yaml"
+        get_target_path_in_steps_directory("tmp_dir/.build/spec.yaml")
     )
     component_path_2 = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec2.yaml"
+        get_target_path_in_steps_directory("tmp_dir/.build/spec2.yaml")
     )
     component_path_3 = str(
-        Path(__file__).parent.parent.resolve() / "steps/tmp_dir/.build/spec3.yaml"
+        get_target_path_in_steps_directory("tmp_dir/.build/spec3.yaml")
     )
 
     with caplog.at_level("INFO"):
@@ -408,7 +408,7 @@ def test_run_with_config_runs_end_to_end(caplog):
     # Create a temporary component folder and generate a random float number as
     # the version number so that we can "almost surely" have a new version number
     # every time we re-run this unit test.
-    tmp_dir = str(Path(__file__).parent.parent.resolve() / "steps/tmp_dir")
+    tmp_dir = str(get_target_path_in_steps_directory("tmp_dir"))
     random_version_number = str(uniform(0.1, 1.0))
     tmp_yaml = {
         "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
@@ -446,3 +446,9 @@ def test_run_with_config_runs_end_to_end(caplog):
 
     # Cleanup
     subprocess.run(["git", "clean", "-xdf"])
+
+
+def get_target_path_in_steps_directory(target) -> Path:
+    end_of_path = "steps/" + target
+    res = Path(__file__).parent.parent.resolve() / end_of_path
+    return res

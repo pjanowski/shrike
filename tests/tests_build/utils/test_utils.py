@@ -11,10 +11,13 @@ from shrike.build.utils import utils
 @pytest.mark.parametrize(
     "file_name,expected_hash",
     [
-        ("run.py", "0A99279D5228028E75A1B38D8A1982607FA9991254603824CDCF06597CE459C5"),
         (
-            ".amlignore",
-            "183C6C201CD9FC9C8D84FC40D1E496AC3716C4B31B5342F6B8659DA5949F1B45",
+            "another_file_for_component1.txt",
+            "9E640A18FC586A6D87716F9B4C6728B7023819E58E07C4562E0D2C14DFC3CF5B",
+        ),
+        (
+            "spec.additional_includes",
+            "50407DAA1E6DA1D91E1CE88DDDF18B3DFDA62E08B780EC9B2E8642536DD36C05",
         ),
     ],
 )
@@ -27,9 +30,8 @@ def test_create_SHA_256_hash_of_file_matches_cosmic_build_tool(
 
     https://dev.azure.com/msdata/Vienna/_build/results?buildId=29991141&view=artifacts&pathAsName=false&type=publishedArtifacts
     """
-    file_path = str(Path(__file__).parent.parent / "steps" / file_name)
+    file_path = str(Path(__file__).parent.parent / "steps/component1" / file_name)
     hash = utils.create_SHA_256_hash_of_file(file_path)
-    print(hash)
 
     assert hash == expected_hash
 

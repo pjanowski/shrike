@@ -8,6 +8,7 @@ import os
 import json
 import logging
 import argparse
+import re
 import webbrowser
 import uuid
 
@@ -156,6 +157,24 @@ class AMLPipelineHelper:
         except ValueError:
             print(f"Getting a dataset handle [name={name} version={version}]...")
             return Dataset.get_by_name(self.workspace(), name=name, version=version)
+
+    @staticmethod
+    def validate_experiment_name(name):
+        """
+        Check whether the experiment name is valid. It's required that
+        experiment names must be between 1 to 250 characters, start with
+        letters or numbers. Valid characters are letters, numbers, "_",
+        and the "-" character.
+        """
+        if len(name) < 1 or len(name) > 250:
+            raise ValueError("Experiment names must be between 1 to 250 characters!")
+        if not re.match("^[a-zA-Z0-9]$", name[0]):
+            raise ValueError("Experiment names must start with letters or numbers!")
+        if not re.match("^[a-zA-Z0-9_-]*$", name):
+            raise ValueError(
+                "Valiad experiment names must only contain letters, numbers, underscore and dash!"
+            )
+        return True
 
     #######################
     ### HELPER BACKEND  ###
@@ -797,6 +816,9 @@ class AMLPipelineHelper:
             message=f"shrike.pipeline=={__version__}",
             properties={"custom_dimensions": {"configuration": str(self.config)}},
         )
+
+        # Check whether the experiment name is valid
+        self.validate_experiment_name(self.config.run.experiment_name)
 
         repository_info = get_repo_info()
         print(f"Running from repository: {repository_info}")

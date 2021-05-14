@@ -56,7 +56,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    packages=find_namespace_packages(include=['shrike.*']),
+    packages=find_namespace_packages(include=["shrike.*"]),
     include_package_data=True,
     install_requires=[],
     extras_require={

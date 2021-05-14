@@ -93,16 +93,30 @@ def load_configuration_from_args_and_env(
 
     cli_config_path = cli_config.get("configuration_file")
     if cli_config_path is not None and os.path.isfile(cli_config_path):
+        log.info("Loading user provided configuration file")
         file_config = OmegaConf.load(cli_config_path)
     elif os.path.isfile(default_config.configuration_file):
+        log.info(
+            "Configuration file does not exist. Loading default configuration file aml-build-configuration.yml."
+        )
         file_config = OmegaConf.load(default_config.configuration_file)
     else:
+        log.info(
+            "User provided/default configuration file does not exist. Using default configuration."
+        )
         file_config = None
 
     if file_config is None:
+        log.info("Configuration file is empty. Using default configuration.")
         cli_and_file_config = cli_config
     else:
+        log.info("Overriding default configuration by configuration file.")
         cli_and_file_config = OmegaConf.merge(file_config, cli_config)
+
+    if cli_and_file_config.get("workspaces") is None:  # type: ignore
+        log.error(
+            "Workspace is not configured. Please update in your configuration file."
+        )
 
     if cli_and_file_config.get("allow_duplicate_versions") is not None:  # type: ignore
         if cli_and_file_config.get("fail_if_version_exists") is None:  # type: ignore

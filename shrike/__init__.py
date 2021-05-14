@@ -5,6 +5,4 @@
 Python utilities to aid "compliant experimentation" - training
 machine learning models without seeing the training data.
 """
-__version__ = "1.0.0-rc4"
-
-
+__version__ = "1.0.0-rc5"

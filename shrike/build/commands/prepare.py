@@ -7,9 +7,10 @@ import glob
 from itertools import chain
 import os
 import collections
-from typing import List, Tuple, Union
+from typing import List, Tuple, Union, Set
 import shutil
 from ruamel.yaml import YAML
+from git import Repo, InvalidGitRepositoryError, NoSuchPathError
 
 from shrike.build.core.command_line import Command
 from shrike.build.utils.utils import (
@@ -224,9 +225,307 @@ CATATTR1=0x00010001:OSAttr:2:6.2
         return all_spec_yaml_files_absolute_paths
 
     def find_component_specification_files_using_smart(self) -> List[str]:
-        raise NotImplementedError(
-            "Smart component activation/discovery method is not supported yet"
+        """
+        This function returns the list of components (as a list of absolute paths) potentially affected by the latest commit.
+        """
+        log.info(
+            "Determining which components are potentially affected by the current change."
         )
+        [repo, current_branch, compliant_branch] = self.identify_repo_and_branches()
+        modified_files = self.get_modified_files(repo, current_branch, compliant_branch)
+        active_components = self.infer_active_components_from_modified_files(
+            modified_files
+        )
+        return active_components
+
+    def identify_repo_and_branches(self):
+        """
+        This function returns the current repository, along with the name of the current and compliant branches [repo, current_branch, compliant_branch].
+        """
+        # identify the repository
+        curr_path = Path(self.config.working_directory)
+        while True:
+            log.info("Trying to see if there is a repo in " + str(curr_path))
+            try:
+                repo = Repo(curr_path)
+                log.info(str(curr_path) + " is a valid repo path")
+                break
+            except (InvalidGitRepositoryError, NoSuchPathError):
+                log.debug(
+                    str(curr_path) + " is not a valid repo path or cannot be accessed."
+                )
+                prev_path = curr_path
+                curr_path = curr_path.parent
+                if prev_path == curr_path:
+                    log.info("No repo found.")
+                    raise Exception(
+                        "No repo found in the current folder or its parents. This command should be run from within the repo."
+                    )
+                    break
+        # identify the current branch
+        try:
+            current_branch = str(
+                repo.head.ref
+            )  # when running from our build the repo head is detached so this will throw an exception
+        except TypeError:
+            current_branch = os.environ.get("BUILD_SOURCEBRANCH")
+        log.info("The current branch is: '" + str(current_branch) + "'.")
+        # Identify the compliant branch
+        if not (self.config.compliant_branch.startswith("^refs/heads/")) or not (
+            self.config.compliant_branch.endswith("$")
+        ):
+            raise Exception(
+                "The name of the compliant branch found in the config file should start with '^refs/heads/' and end with '$'. Currently it is: '"
+                + self.config.compliant_branch
+                + "'."
+            )
+        else:
+            compliant_branch = self.config.compliant_branch.replace("^refs/heads/", "")[
+                0:-1
+            ]
+        log.info("The compliant branch is: '" + compliant_branch + "'.")
+        return [repo, current_branch, compliant_branch]
+
+    def get_modified_files(self, repo, current_branch, compliant_branch) -> Set[str]:
+        """
+        This function returns the paths of files that have been modified. 3 scenarios are supported.\n
+        1/ 'Build - before Merge'; when the 'prepare' command is run as part of a build, but before the actual merge (in this case, the name of the current branch starts with 'refs/pull/' - this is the default Azure DevOps behavior).\n
+        2/ 'Build - after Merge'; when the 'prepare' command is run as part of a build, after the actual merge (in this case, the name of the current branch is the same as the name of the compliant branch).\n
+        3/ 'Manual'; when the prepare command is run manually (typically before publishing the PR).
+        """
+        res = set()
+        # Grab the diff differently depending on the scenario
+        if current_branch.replace("refs/heads/", "") == compliant_branch:
+            # 'Build - after Merge' case: let's get the diff between the tree of the latest commit to the compliant branch, and the tree of the previous commit to the compliant branch corresponding to a PR (we assume the commit summary starts with 'Merged PR')
+            log.info(
+                "We are in the 'Build - after Merge' case (the current branch is the compliant branch)."
+            )
+            latest_compliant_commit = repo.remotes.origin.refs[compliant_branch].commit
+            previous_compliant_commit_with_PR = latest_compliant_commit
+            for c in latest_compliant_commit.iter_parents():
+                if c.summary.startswith("Merged PR"):
+                    previous_compliant_commit_with_PR = c
+                    break
+            log.debug("Current commit to compliant branch:")
+            log.debug("Summary: " + latest_compliant_commit.summary)
+            log.debug("Author: " + str(latest_compliant_commit.author))
+            log.debug("Authored Date: " + str(latest_compliant_commit.authored_date))
+            log.debug("Message: " + latest_compliant_commit.message)
+            log.debug("Previous commit to compliant branch:")
+            log.debug("Summary: " + previous_compliant_commit_with_PR.summary)
+            log.debug("Author: " + str(previous_compliant_commit_with_PR.author))
+            log.debug(
+                "Authored Date: " + str(previous_compliant_commit_with_PR.authored_date)
+            )
+            log.debug("Message: " + previous_compliant_commit_with_PR.message)
+            diff = latest_compliant_commit.tree.diff(
+                previous_compliant_commit_with_PR.tree
+            )
+        elif current_branch.startswith("refs/pull/"):
+            # 'Build - before Merge': let's take the diff between the tree of the current commit, and the tree of the previous commit to the compliant branch corresponding to a PR (we assume the commit summary starts with 'Merged PR')
+            log.info(
+                "We are in the 'Build - before Merge' case (the current branch is not the compliant branch and its name starts with 'refs/pull/')."
+            )
+            current_commit = repo.commit()
+            log.debug("Current commit to current branch:")
+            log.debug("Summary: " + current_commit.summary)
+            log.debug("Author: " + str(current_commit.author))
+            log.debug("Authored Date: " + str(current_commit.authored_date))
+            log.debug("Message: " + current_commit.message)
+            latest_compliant_commit = repo.remotes.origin.refs[compliant_branch].commit
+            if not (latest_compliant_commit.summary.startswith("Merged PR")):
+                for c in latest_compliant_commit.iter_parents():
+                    if c.summary.startswith("Merged PR"):
+                        latest_compliant_commit = c
+                        break
+            log.debug("Previous PR commit to compliant branch:")
+            log.debug("Summary: " + latest_compliant_commit.summary)
+            log.debug("Author: " + str(latest_compliant_commit.author))
+            log.debug("Authored Date: " + str(latest_compliant_commit.authored_date))
+            log.debug("Message: " + latest_compliant_commit.message)
+            diff = current_commit.tree.diff(latest_compliant_commit.tree)
+        else:
+            # 'Manual' Case: let's take the diff between the current branch and the compliant branch (we're assuming the compliant branch is locally up to date here)
+            log.info(
+                "We are in the 'Manual' case (the current branch is NOT the compliant branch and its name does not start with 'refs/pull/')."
+            )
+            log.debug("Current commit to current branch:")
+            log.debug("Summary: " + repo.heads[current_branch].commit.summary)
+            log.debug("Author: " + str(repo.heads[current_branch].commit.author))
+            log.debug(
+                "Authored Date: " + str(repo.heads[current_branch].commit.authored_date)
+            )
+            log.debug("Message: " + repo.heads[current_branch].commit.message)
+            log.debug("Previous commit to compliant branch:")
+            log.debug("Summary: " + repo.heads[compliant_branch].commit.summary)
+            log.debug("Author: " + str(repo.heads[compliant_branch].commit.author))
+            log.debug(
+                "Authored Date: "
+                + str(repo.heads[compliant_branch].commit.authored_date)
+            )
+            log.debug("Message: " + repo.heads[compliant_branch].commit.message)
+            diff = repo.heads[current_branch].commit.tree.diff(
+                repo.heads[compliant_branch].commit.tree
+            )
+        # let's build a set with the paths of modified files
+        log.debug("Working directory: " + self.config.working_directory)
+        log.debug("repo.working_dir: " + repo.working_dir)
+        log.debug("repo.working_tree_dir: " + repo.working_tree_dir)
+        log.debug("repo.git_dir: " + repo.git_dir)
+        for d in diff:
+            log.debug("d.a_path: " + d.a_path)
+            log.debug("Path(d.a_path).absolute(): " + str(Path(d.a_path).absolute()))
+            log.debug("Path(d.a_path).resolve(): " + str(Path(d.a_path).resolve()))
+            r_a = str(Path(repo.git_dir).parent / Path(d.a_path))
+            res.add(r_a)
+            r_b = str(Path(repo.git_dir).parent / Path(d.b_path))
+            res.add(r_b)
+        log.info("The list of modified files is:")
+        log.info(res)
+        return res
+
+    def infer_active_components_from_modified_files(self, modified_files) -> List[str]:
+        """
+        This function returns the list of components (as a list of directories paths) potentially affected by changes in the `modified_files`.
+        """
+        rv = []
+        # We will go over components one by one
+        all_components_in_repo = self.find_component_specification_files_using_all()
+        log.info("List of all components in repo:")
+        log.info(all_components_in_repo)
+        for component in all_components_in_repo:
+            if self.component_is_active(component, modified_files):
+                rv.append(component)
+        # No need to dedup rv since we are only considering components once
+        log.info("The active components are:")
+        log.info(rv)
+        return rv
+
+    def component_is_active(self, component, modified_files) -> bool:
+        """
+        This function returns True if any of the 'modified_files' potentially affects the 'component' (i.e. if it is directly in one of the 'component' subfolders, or if it is covered by the additional_includes files). If the component has been deleted, returns False.
+        """
+        log.info("Assessing whether component '" + component + "' is active...")
+        # Let's first take care of the case where the component has been deleted
+        if not (Path(component).exists()):
+            return False
+        # Let's grab the contents of the additional_includes file if it exists.
+        # First, we figure out the name of the additional_includes file, based on the component name
+        component_name_without_extension = Path(component).name.split(".yaml")[0]
+        # Then, we construct the path of the additional_includes file
+        component_additional_includes_path = os.path.join(
+            Path(component).parent,
+            component_name_without_extension + ".additional_includes",
+        )
+        # And we finally load it
+        if Path(component_additional_includes_path).exists():
+            with open(
+                component_additional_includes_path, "r"
+            ) as component_additional_includes:
+                component_additional_includes_contents = (
+                    component_additional_includes.readlines()
+                )
+        else:
+            component_additional_includes_contents = None
+        # make the paths in the additional_includes file absolute
+        if not (component_additional_includes_contents is None):
+            for line_number in range(0, len(component_additional_includes_contents)):
+                component_additional_includes_contents[line_number] = str(
+                    Path(
+                        os.path.join(
+                            Path(component).parent,
+                            component_additional_includes_contents[line_number].rstrip(
+                                "\n"
+                            ),
+                        )
+                    ).resolve()
+                )
+        # loop over all modified files; if current file is in subfolder of component or covered by additional includes, return True
+        for modified_file in modified_files:
+            if self.is_in_subfolder(
+                modified_file, component
+            ) or self.is_in_additional_includes(
+                modified_file, component_additional_includes_contents
+            ):
+                return True
+        return False
+
+    def is_in_subfolder(self, modified_file, component) -> bool:
+        """
+        This function returns True if 'modified_file' is in a subfolder of 'component' ('component' can be either the path to a file, or a directory). If the component has been deleted, returns False.
+        """
+        # Let's first take care of the case where the component has been deleted
+        if not (Path(component).exists()):
+            log.debug("'" + component + "' does not exist, returning False.")
+            return False
+        # Case where the component has not been deleted
+        for parent in Path(modified_file).parents:
+            if parent.exists():
+                if Path(component).is_dir():
+                    if parent.samefile(Path(component)):
+                        log.info(
+                            "'"
+                            + modified_file
+                            + " is in a subfolder of '"
+                            + component
+                            + "'."
+                        )
+                        return True
+                else:
+                    if parent.samefile(Path(component).parent):
+                        log.info(
+                            "'"
+                            + modified_file
+                            + " is in a subfolder of '"
+                            + component
+                            + "'."
+                        )
+                        return True
+        log.debug(
+            "'" + modified_file + " is NOT in a subfolder of '" + component + "'."
+        )
+        return False
+
+    def is_in_additional_includes(
+        self, modified_file, component_additional_includes_contents
+    ) -> bool:
+        """
+        This function returns True if 'modified_file' is covered by the additional_includes file 'component_additional_includes_contents'.
+        """
+        # first tackle the trivial case of no additional_includes file
+        if component_additional_includes_contents is None:
+            log.debug(
+                "The component's additional_includes file is empty, returning False."
+            )
+            return False
+        # now the regular scenario
+        for line in component_additional_includes_contents:
+            # when the line from additional_includes is a file, we directly chech its path against that of modified_file
+            if Path(line).is_file():
+                if str(Path(modified_file).resolve()) == str(
+                    Path(line).resolve()
+                ):  # can't use 'samefile' here because modified_file is not guaranteed to exist, we resolve the path and do basic == test
+                    log.info(
+                        "'"
+                        + modified_file
+                        + " is directly listed in the additional_includes file."
+                    )
+                    return True
+            # slightly more complicated case: when the line in additional_includes is a directory, we can just call the is_in_subfolder function
+            if Path(line).is_dir():
+                if self.is_in_subfolder(modified_file, line):
+                    log.info(
+                        "'"
+                        + modified_file
+                        + " is in one of the directories listed in the additional_includes file."
+                    )
+                    return True
+        log.debug(
+            "'"
+            + modified_file
+            + " is NOT referenced by the additional_includes file (neither directly nor indirectly)."
+        )
+        return False
 
     def run_with_config(self):
         log.info("Running component preparation logic.")

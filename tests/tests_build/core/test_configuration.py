@@ -94,3 +94,18 @@ def test_load_configuration_from_args_and_env_deprecation(caplog, tmp_path):
 
     config4 = load_configuration_from_args_and_env(args4, {})
     assert config4.fail_if_version_exists
+
+
+def test_configuration_path_does_not_exist(caplog, tmp_path):
+    config_path = tmp_path / "file_does_not_exist.yaml"
+    args = [
+        "--configuration-file",
+        str(config_path),
+        "--component-specification-glob",
+        "*.yaml",
+    ]
+    with caplog.at_level("ERROR"):
+        config = load_configuration_from_args_and_env(args, {})
+
+    assert config.configuration_file == str(config_path)
+    assert "Workspace is not configured." in caplog.text
