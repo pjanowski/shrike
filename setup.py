@@ -9,7 +9,7 @@ https://docs.python.org/3/distutils/setupscript.html
 
 
 import pathlib
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 from shrike import __version__
 
 
@@ -56,7 +56,7 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
     ],
-    packages=["shrike"],
+    packages=find_namespace_packages(include=['shrike.*']),
     include_package_data=True,
     install_requires=[],
     extras_require={
