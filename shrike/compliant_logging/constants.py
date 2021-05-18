@@ -10,7 +10,7 @@ from enum import Enum
 
 class DataCategory(Enum):
     """
-    Enumeration of data categories in confidential machine learning.
+    Enumeration of data categories in compliant machine learning.
 
     Values:
     - PRIVATE: data which is private. Researchers may not view this.

@@ -5,7 +5,7 @@ Unhandled exception. System.IndexOutOfRangeException: Index was outside the boun
    at ExtractExceptions.ExceptionExtractor.Main(String[] args) in C:\code\ExP_Code\dotnetcore\errorParser\Program.cs:line 121
 foo bar
 Traceback (most recent call last):
-  File "/mnt/c/code/shrike/shrike/confidential_logging/exceptionExtractor.py", line 28, in <module>
+  File "/mnt/c/code/shrike/shrike/compliant_logging/exceptionExtractor.py", line 28, in <module>
     print(10/0)
 ZeroDivisionError: division by zero
 Traceback: foo bar

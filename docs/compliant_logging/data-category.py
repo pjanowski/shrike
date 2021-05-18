@@ -3,7 +3,7 @@
 
 import argparse
 import shrike
-from shrike.confidential_logging.constants import DataCategory
+from shrike.compliant_logging.constants import DataCategory
 import logging
 
 if __name__ == "__main__":
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     parser.add_argument("--log_level", default="INFO")
     args = parser.parse_args()
 
-    shrike.confidential_logging.enable_confidential_logging(
+    shrike.compliant_logging.enable_compliant_logging(
         args.prefix,
         level=args.log_level,
         format="%(prefix)s%(levelname)s:%(name)s:%(message)s",

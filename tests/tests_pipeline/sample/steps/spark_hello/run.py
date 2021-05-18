@@ -5,8 +5,8 @@ import argparse
 from argparse import ArgumentParser
 
 import shrike
-from shrike.confidential_logging.constants import DataCategory
-from shrike.confidential_logging.exceptions import prefix_stack_trace
+from shrike.compliant_logging.constants import DataCategory
+from shrike.compliant_logging.exceptions import prefix_stack_trace
 import logging
 from pyspark.sql import SparkSession
 import time
@@ -104,5 +104,5 @@ def main():
 
 
 if __name__ == "__main__":
-    shrike.confidential_loggine.enable_confidential_logging()
+    shrike.compliant_loggine.enable_compliant_logging()
     main()

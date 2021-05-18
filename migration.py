@@ -27,7 +27,7 @@ def main():
     # dash connected package name usually appears in requirements.txt or env.yaml
     keyword_pair = {
         "amldspipelinecontrib": "shrike.pipeline",
-        "confidential_ml_utils": "shrike.confidential_logging",
+        "confidential_ml_utils": "shrike.compliant_logging",
         "aml_build_tooling": "shrike.build",
     }
 

@@ -1,8 +1,8 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
-from shrike import confidential_logging
-from shrike.confidential_logging.constants import DataCategory
+from shrike import compliant_logging
+from shrike.compliant_logging.constants import DataCategory
 import io
 import logging
 import pytest
@@ -47,12 +47,12 @@ class StreamHandlerContext:
 
 @pytest.mark.parametrize("level", ["debug", "info", "warning", "error", "critical"])
 def test_data_category_and_log_info_works_as_expected(level):
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
 
     log = logging.getLogger()
     log.setLevel(level.upper())
 
-    assert isinstance(log, confidential_logging.logging.ConfidentialLogger)
+    assert isinstance(log, compliant_logging.logging.CompliantLogger)
 
     with StreamHandlerContext(
         log, "%(prefix)s%(levelname)s:%(name)s:%(message)s"
@@ -67,11 +67,11 @@ def test_data_category_and_log_info_works_as_expected(level):
 
 
 def test_non_category_aware_logging_works_as_expected():
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
 
     log = logging.getLogger()
     extra = {"test_name": "", "test_id": ""}
-    assert isinstance(log, confidential_logging.logging.ConfidentialLogger)
+    assert isinstance(log, compliant_logging.logging.CompliantLogger)
     with StreamHandlerContext(
         log, "%(test_name)s:%(test_id)s %(prefix)s%(levelname)s:%(name)s:%(message)s"
     ) as context:
@@ -105,9 +105,9 @@ def test_non_category_aware_logging_works_as_expected():
 
 @pytest.mark.parametrize("exec_type,message", [(ArithmeticError, "1+1 != 3")])
 def test_exception_works_as_expected(exec_type, message):
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
     log = logging.getLogger()
-    assert isinstance(log, confidential_logging.logging.ConfidentialLogger)
+    assert isinstance(log, compliant_logging.logging.CompliantLogger)
 
     with StreamHandlerContext(
         log, "%(prefix)s%(levelname)s:%(name)s:%(message)s"
@@ -122,7 +122,7 @@ def test_exception_works_as_expected(exec_type, message):
 
 
 def test_all_the_stuff():
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
     log = logging.getLogger("foo")
     log.info("public", category=DataCategory.PUBLIC)
     log.info("PRIVATE", category=DataCategory.PRIVATE)
@@ -131,11 +131,11 @@ def test_all_the_stuff():
 
 
 @pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python >= 3.8")
-def test_enable_confidential_logging_sets_force():
+def test_enable_compliant_logging_sets_force():
     # Pytest adds handlers to the root logger by default.
     initial_handlers = list(logging.root.handlers)
 
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
 
     assert len(logging.root.handlers) == 1
     assert all(h not in logging.root.handlers for h in initial_handlers)
@@ -144,8 +144,21 @@ def test_enable_confidential_logging_sets_force():
 def test_warn_if_root_handlers_already_exist(capsys):
     # Pytest adds handlers to the root logger by default.
 
-    confidential_logging.enable_confidential_logging()
+    compliant_logging.enable_compliant_logging()
 
     # https://docs.pytest.org/en/stable/capture.html
     stderr = capsys.readouterr().err
     assert "SystemLog:The root logger already has handlers set!" in stderr
+
+
+def test_deprecated_enable_confidential_logging(capsys):
+    """Pytest the pending deprecation of enable_confidential_logging"""
+
+    compliant_logging.enable_confidential_logging()
+
+    # https://docs.pytest.org/en/stable/capture.html
+    stderr = capsys.readouterr().err
+    assert (
+        "SystemLog: The function enable_confidential_logging() is on the way "
+        "to deprecation. Please use enable_compliant_logging() instead." in stderr
+    )

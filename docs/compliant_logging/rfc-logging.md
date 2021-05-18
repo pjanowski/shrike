@@ -1,4 +1,4 @@
-# Logging in confidential ML
+# Logging in Compliant ML
 
 | Owner | Approvers | Participants |
 | - | - | - |
@@ -19,7 +19,7 @@ These can include:
 Machine learning is already a hard problem &mdash; building and training models
 under these constraints is even more difficult. This RFC (**R**equest **F**or
 **C**omment) proposes the code patterns and expected behavior of a to-be-written
-logging utility for confidential machine learning. It begins by outlining the
+logging utility for compliant machine learning. It begins by outlining the
 requirements this utility would need to satisfy, then gives a concrete proposal
 with sample code. It proceeds to outline some alternatives, along with known
 risks of the proposal.
@@ -28,8 +28,8 @@ The following topics are out of scope for this RFC:
 
 - How to implement the proposed behavior. It considers only usage patterns and
   the intended behavior of the logging utility library.
-- Confidential argument parsing.
-- Confidential exception handling (how to keep and prefix the stack trace and
+- Compliant argument parsing.
+- Compliant exception handling (how to keep and prefix the stack trace and
   exception type, while scrubbing exception messages).
 - Languages besides Python.
 
@@ -71,8 +71,8 @@ Here is some sample code following this proposal.
 
 ```python
 import argparse
-from confidential_ml_utils import logging
-from confidential_ml_utils.constants import DataCategory
+from shrike.compliant_logging import logging
+from shrike.compliant_logging.constants import DataCategory
 
 def main(logger):
     # HAS a prefix.
@@ -91,8 +91,8 @@ if __name__ == '__main__':
     main(logger)
 ```
 
-Open question: should the confidential `logging.getLogger` method throw an
-exception if the non-confidential `logging` namespace is in scope?
+Open question: should the compliant `logging.getLogger` method throw an
+exception if the non-compliant `logging` namespace is in scope?
 
 ## Alternatives
 
@@ -134,7 +134,7 @@ writing this line
 print('SystemLog: private data')
 ```
 
-Confidential machine learning in this context involves an element of trust, i.e.
+Compliant machine learning in this context involves an element of trust, i.e.
 it is not designed or intended to stop malicious actors.
 
 We do **not** attempt to mitigate this risk by filtering out specific types of

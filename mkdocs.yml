@@ -2,13 +2,13 @@ site_name: Shrike
 
 nav:
 - Home: index.md
-- Confidential Logging:
-    Logging examples: confidential_logging/README.md
-    Logging design: confidential_logging/rfc-logging.md
+- Compliant Logging:
+    Logging examples: compliant_logging/README.md
+    Logging design: compliant_logging/rfc-logging.md
     API reference:
-      constants: confidential_logging/constants.md
-      exceptions: confidential_logging/exceptions.md
-      logging: confidential_logging/logging.md
+      constants: compliant_logging/constants.md
+      exceptions: compliant_logging/exceptions.md
+      logging: compliant_logging/logging.md
 - Build:
     Sign & register components: build/build-for-sign-and-register.md
     API reference:

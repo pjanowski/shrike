@@ -5,7 +5,7 @@
 Simplest example of how to use the prefix_stack_trace decorator.
 """
 
-from shrike.confidential_logging.exceptions import prefix_stack_trace
+from shrike.compliant_logging.exceptions import prefix_stack_trace
 
 
 # Output will be:

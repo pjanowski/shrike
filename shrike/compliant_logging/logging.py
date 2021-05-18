@@ -7,7 +7,7 @@ Utilities around logging data which may or may not contain private content.
 
 
 from typing import Optional
-from shrike.confidential_logging.constants import DataCategory
+from shrike.compliant_logging.constants import DataCategory
 import logging
 import sys
 from threading import Lock
@@ -36,7 +36,7 @@ def get_prefix() -> Optional[str]:
     return _PREFIX
 
 
-class ConfidentialLogger(logging.getLoggerClass()):  # type: ignore
+class CompliantLogger(logging.getLoggerClass()):  # type: ignore
     """
     Subclass of the default logging class with an explicit `category` parameter
     on all logging methods. It will pass an `extra` param with `prefix` key
@@ -71,7 +71,7 @@ class ConfidentialLogger(logging.getLoggerClass()):  # type: ignore
         else:
             extra = {"prefix": p}
         if sys.version_info[1] <= 7:
-            super(ConfidentialLogger, self)._log(
+            super(CompliantLogger, self)._log(
                 level=level,
                 msg=msg,
                 args=args,
@@ -80,14 +80,14 @@ class ConfidentialLogger(logging.getLoggerClass()):  # type: ignore
                 stack_info=stack_info,
             )
         else:
-            super(ConfidentialLogger, self)._log(
+            super(CompliantLogger, self)._log(
                 level=level,
                 msg=msg,
                 args=args,
                 exc_info=exc_info,
                 extra=extra,
                 stack_info=stack_info,
-                stacklevel=stacklevel,
+                stacklevel=stacklevel,  # type: ignore
             )
 
 
@@ -102,11 +102,11 @@ https://github.com/Azure/confidential-ml-utils/issues/33 for more information.
 """
 
 
-def enable_confidential_logging(prefix: str = "SystemLog:", **kwargs) -> None:
+def enable_compliant_logging(prefix: str = "SystemLog:", **kwargs) -> None:
     """
     The default format is `logging.BASIC_FORMAT` (`%(levelname)s:%(name)s:%(message)s`).
     All other kwargs are passed to `logging.basicConfig`. Sets the default
-    logger class and root logger to be confidential. This means the format
+    logger class and root logger to be compliant. This means the format
     string `%(prefix)` will work.
 
     Set the format using the `format` kwarg.
@@ -128,8 +128,8 @@ def enable_confidential_logging(prefix: str = "SystemLog:", **kwargs) -> None:
         kwargs["format"] = f"%(prefix)s{logging.BASIC_FORMAT}"
 
     # Ensure that all loggers created via `logging.getLogger` are instances of
-    # the `ConfidentialLogger` class.
-    logging.setLoggerClass(ConfidentialLogger)
+    # the `CompliantLogger` class.
+    logging.setLoggerClass(CompliantLogger)
 
     if len(logging.root.handlers) > 0:
         p = get_prefix()
@@ -141,7 +141,7 @@ def enable_confidential_logging(prefix: str = "SystemLog:", **kwargs) -> None:
 
     old_root = logging.root
 
-    root = ConfidentialLogger(logging.root.name)
+    root = CompliantLogger(logging.root.name)
     root.handlers = old_root.handlers
 
     logging.root = root
@@ -150,3 +150,16 @@ def enable_confidential_logging(prefix: str = "SystemLog:", **kwargs) -> None:
 
     # https://github.com/kivy/kivy/issues/6733
     logging.basicConfig(**kwargs)
+
+
+def enable_confidential_logging(prefix: str = "SystemLog:", **kwargs) -> None:
+    """
+    This function is a duplicate of the function `enable_compliant_logging`.
+    We encourage users to use `enable_compliant_logging`.
+    """
+    print(
+        f"{prefix} The function enable_confidential_logging() is on the way"
+        " to deprecation. Please use enable_compliant_logging() instead.",
+        file=sys.stderr,
+    )
+    enable_compliant_logging(prefix, **kwargs)

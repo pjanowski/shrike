@@ -5,7 +5,7 @@
 Sample use of Public* exception types.
 """
 
-from shrike.confidential_logging.exceptions import prefix_stack_trace, PublicValueError
+from shrike.compliant_logging.exceptions import prefix_stack_trace, PublicValueError
 
 
 def divide(a, b):
@@ -20,7 +20,7 @@ def divide(a, b):
 # SystemLog:     divide(1, 0)
 # SystemLog:   File ".\docs\logging\public-exceptions.py", line 13, in divide
 # SystemLog:     raise PublicValueError("Second argument cannot be null or zero.")
-# SystemLog: confidential_logging.exceptions.PublicValueError: SystemLog:Second argument cannot be null or zero.
+# SystemLog: compliant_logging.exceptions.PublicValueError: SystemLog:Second argument cannot be null or zero.
 @prefix_stack_trace()
 def main():
     divide(1, 0)

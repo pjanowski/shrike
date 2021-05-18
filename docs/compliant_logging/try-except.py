@@ -6,7 +6,7 @@ Simple script with examples of how to directly use the function
 print_prefixed_stack_trace to capture information about failed module imports.
 """
 
-from shrike.confidential_logging.exceptions import print_prefixed_stack_trace_and_raise
+from shrike.compliant_logging.exceptions import print_prefixed_stack_trace_and_raise
 
 try:
     # Import statement which could raise an exception containing sensitive

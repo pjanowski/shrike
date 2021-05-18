@@ -10,7 +10,7 @@ from traceback import TracebackException
 import uuid
 
 
-from shrike.confidential_logging.exceptions import (
+from shrike.compliant_logging.exceptions import (
     _PrefixStackTraceWrapper,
     prefix_stack_trace,
     SCRUB_MESSAGE,
@@ -403,7 +403,7 @@ def test_public_argument_error_message_is_preserved():
 
 @pytest.mark.parametrize("message,exc_type", [("hi", ArithmeticError)])
 def test_default_allow_list_respected(message, exc_type):
-    from shrike.confidential_logging.exceptions import default_allow_list
+    from shrike.compliant_logging.exceptions import default_allow_list
 
     default_allow_list.clear()
     default_allow_list.append(message)

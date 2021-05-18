@@ -6,7 +6,7 @@ Simple script with examples of how to use "with statements" to capture
 information about failed module imports.
 """
 
-from shrike.confidential_logging.exceptions import PrefixStackTrace
+from shrike.compliant_logging.exceptions import PrefixStackTrace
 
 # Output will be:
 #

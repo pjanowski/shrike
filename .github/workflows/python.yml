@@ -45,7 +45,7 @@ jobs:
     # See: https://github.com/codecov/example-python
     - name: pytest
       run: |
-        python -m pytest tests/tests_confidential_logging --cov --junitxml=test-logging-result.xml
+        python -m pytest tests/tests_compliant_logging --cov --junitxml=test-logging-result.xml
       if: always()
     - name: publish test results
       if: ${{ matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8' }}

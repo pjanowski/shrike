@@ -5,7 +5,7 @@ import glob
 import os
 import re
 from typing import List
-from shrike.confidential_logging.exceptions import (
+from shrike.compliant_logging.exceptions import (
     PublicValueError,
     print_prefixed_stack_trace_and_raise,
 )

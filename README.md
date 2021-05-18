@@ -22,7 +22,7 @@ learning, with a special emphasis on running pipeline in the platform of
 [Azure Machine Learning](https://github.com/Azure/azureml-examples). This
 library mainly contains three components, that are
 
--  `shrike.confidential_logging`: utlities for confidential logging and 
+-  `shrike.compliant_logging`: utlities for compliant logging and 
 exception handling;
 -  `shrike.pipeline`: helper code for manging, validating and submitting Azure
 Machine Learning pipelines based on 
@@ -42,7 +42,7 @@ pip install shrike[pipeline,build]
 ```
 There are three optional extra dependenciies - `pipeline`, `build` and `dev`, 
 among which `dev` is for the development environment of shrike. 
-If only the confidential-logging feature would be used, please 
+If only the compliant-logging feature would be used, please 
 just type without any extras:
 ```pwsh
 pip install shrike

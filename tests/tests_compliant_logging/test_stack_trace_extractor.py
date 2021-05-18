@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
-import shrike.confidential_logging.stack_trace_extractor as ste
+import shrike.compliant_logging.stack_trace_extractor as ste
 import pathlib
 import re
 
@@ -43,7 +43,7 @@ def test_parse_trace_python_parses_correctly():
     assert extractor.in_python_traceback
 
     line = (
-        r"File \"/mnt/c/code/shrike/shrike/confidential_logging/"
+        r"File \"/mnt/c/code/shrike/shrike/compliant_logging/"
         r"exceptionExtractor.py\", line 28, in <module>"
     )
     match = extractor._parse_trace_python(line)

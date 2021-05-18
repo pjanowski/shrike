@@ -5,7 +5,7 @@
 Demonstrate how scrubbing options.
 """
 
-from shrike.confidential_logging.exceptions import prefix_stack_trace
+from shrike.compliant_logging.exceptions import prefix_stack_trace
 
 # Output will be:
 #

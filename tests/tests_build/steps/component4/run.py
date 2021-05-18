@@ -17,9 +17,9 @@ import shutil
 import tempfile
 import zipfile
 from distutils.dir_util import copy_tree
-from shrike.confidential_logging.constants import DataCategory
-from shrike.confidential_logging.exceptions import prefix_stack_trace
-from shrike.confidential_logging import enable_confidential_logging
+from shrike.compliant_logging.constants import DataCategory
+from shrike.compliant_logging.exceptions import prefix_stack_trace
+from shrike.compliant_logging import enable_compliant_logging
 import logging
 
 
@@ -410,7 +410,7 @@ def audio_generate(args, log):
 
 
 if __name__ == "__main__":
-    enable_confidential_logging()
+    enable_compliant_logging()
     log = logging.getLogger(__name__)
     log.info("job started", category=DataCategory.PUBLIC)
 
