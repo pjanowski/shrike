@@ -24,11 +24,12 @@ def main():
     cur_repo_path = os.path.abspath(args.input_path)
     logger.info(f"Task: converting: {cur_repo_path}")
 
-    # dash connected package name usually appears in requirements.txt or env.yaml
     keyword_pair = {
         "amldspipelinecontrib": "shrike.pipeline",
         "confidential_ml_utils": "shrike.compliant_logging",
         "aml_build_tooling": "shrike.build",
+        "confidential_logging": "compliant_logging",
+        "ConfidentialLogger": "CompliantLogger",
     }
 
     if os.path.isfile(cur_repo_path):
@@ -56,7 +57,6 @@ def check_is_requirements_file(file):
 
 
 def convert_file(keyword_pair, file):
-    installed_shrike = False
     is_requirements_file = check_is_requirements_file(file)
     with open(file, "r") as input_file:
         lines = input_file.readlines()
@@ -71,7 +71,7 @@ def convert_file(keyword_pair, file):
                 if "Pip Authenticate aml-ds-pipeline-contrib" not in line:
                     line = re.sub(
                         "aml-ds-pipeline-contrib(==|~=)([0-9\.a-zA-Z])+",  # noqa
-                        "shrike",
+                        "shrike[pipeline]",
                         line,
                     )  # replace "aml-ds-pipeline-contrib==" or "~=" by shrike
                     line = re.sub(
@@ -80,7 +80,7 @@ def convert_file(keyword_pair, file):
 
                     line = re.sub(
                         "aml-build-tooling((==|~=)([0-9\.a-zA-Z])+|$)",  # noqa
-                        "shrike",
+                        "shrike[build]",
                         line,
                     )
                     line = re.sub(
@@ -89,21 +89,7 @@ def convert_file(keyword_pair, file):
                         line,
                     )
 
-            # list "shrike" only once in requirements.txt
-            if is_requirements_file:
-                if installed_shrike and "shrike" in line:
-                    continue
-                else:
-                    output_file.write(line)
-                    installed_shrike = "shrike" in line
-            elif "pip install shrike" in line:
-                if installed_shrike and "pip install shrike" in line:
-                    continue
-                else:
-                    output_file.write(line)
-                    installed_shrike = "pip install shrike" in line
-            else:
-                output_file.write(line)
+            output_file.write(line)
 
 
 if __name__ == "__main__":
