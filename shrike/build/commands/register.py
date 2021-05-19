@@ -56,7 +56,7 @@ class Register(Command):
                 log.info(f"Find a signed component for Aether: {spec_path}")
             else:
                 log.warning(f"Find an unsigned component: {spec_path}")
-            log.info(str(spec_path.parent.joinpath("cataglog.json")))
+            log.info(str(spec_path.parent.joinpath("catalog.json")))
 
         if len(signed_component_spec_files) == 0:
             log.info("Cannot find any signed components for AML.")

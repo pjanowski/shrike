@@ -531,9 +531,20 @@ def test_get_modified_files():
         str(file_name_3.resolve()),
         str(file_name_5.resolve()),
     }
-    # 3. test the 'Manual' case
+    # 3. test the 'Manual' case (triggered from local)
     change_list_Manual = prep.get_modified_files(
         new_repo, new_branch_name, main_branch_name
+    )
+    assert change_list_Manual == {
+        str(file_name_2.resolve()),
+        str(file_name_3.resolve()),
+        str(file_name_5.resolve()),
+    }
+
+    # 4. test the 'Manual' case triggered from DevOps
+    # (using a non existing branch name to mimick that DevOps case where the repo has detached head and we cannot just take repo.heads[current_branch])
+    change_list_Manual = prep.get_modified_files(
+        new_repo, "non-existing_branch_name", main_branch_name
     )
     assert change_list_Manual == {
         str(file_name_2.resolve()),

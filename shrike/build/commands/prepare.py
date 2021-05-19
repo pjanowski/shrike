@@ -243,26 +243,16 @@ CATATTR1=0x00010001:OSAttr:2:6.2
         This function returns the current repository, along with the name of the current and compliant branches [repo, current_branch, compliant_branch].
         """
         # identify the repository
-        curr_path = Path(self.config.working_directory)
-        while True:
-            log.info("Trying to see if there is a repo in " + str(curr_path))
-            try:
-                repo = Repo(curr_path)
-                log.info(str(curr_path) + " is a valid repo path")
-                break
-            except (InvalidGitRepositoryError, NoSuchPathError):
-                log.debug(
-                    str(curr_path) + " is not a valid repo path or cannot be accessed."
-                )
-                prev_path = curr_path
-                curr_path = curr_path.parent
-                if prev_path == curr_path:
-                    log.info("No repo found.")
-                    raise Exception(
-                        "No repo found in the current folder or its parents. This command should be run from within the repo."
-                    )
-                    break
-        # identify the current branch
+        curr_path = Path(self.config.working_directory).resolve()
+        try:
+            repo = Repo(curr_path, search_parent_directories=True)
+            log.info("Found a valid repository in " + repo.git_dir)
+        except (InvalidGitRepositoryError, NoSuchPathError):
+            log.debug(
+                str(curr_path)
+                + " or its parents do not contain a valid repo path or cannot be accessed."
+            )
+            return None
         try:
             current_branch = str(
                 repo.head.ref
@@ -296,78 +286,78 @@ CATATTR1=0x00010001:OSAttr:2:6.2
         res = set()
         # Grab the diff differently depending on the scenario
         if current_branch.replace("refs/heads/", "") == compliant_branch:
-            # 'Build - after Merge' case: let's get the diff between the tree of the latest commit to the compliant branch, and the tree of the previous commit to the compliant branch corresponding to a PR (we assume the commit summary starts with 'Merged PR')
+            # 'Build - after Merge' case: we will take the diff between the
+            # tree of the latest commit to the compliant branch, and the tree
+            # of the previous commit to the compliant branch corresponding to a
+            # PR (we assume the commit summary starts with 'Merged PR')
             log.info(
                 "We are in the 'Build - after Merge' case (the current branch is the compliant branch)."
             )
-            latest_compliant_commit = repo.remotes.origin.refs[compliant_branch].commit
-            previous_compliant_commit_with_PR = latest_compliant_commit
-            for c in latest_compliant_commit.iter_parents():
-                if c.summary.startswith("Merged PR"):
-                    previous_compliant_commit_with_PR = c
-                    break
-            log.debug("Current commit to compliant branch:")
-            log.debug("Summary: " + latest_compliant_commit.summary)
-            log.debug("Author: " + str(latest_compliant_commit.author))
-            log.debug("Authored Date: " + str(latest_compliant_commit.authored_date))
-            log.debug("Message: " + latest_compliant_commit.message)
-            log.debug("Previous commit to compliant branch:")
-            log.debug("Summary: " + previous_compliant_commit_with_PR.summary)
-            log.debug("Author: " + str(previous_compliant_commit_with_PR.author))
-            log.debug(
-                "Authored Date: " + str(previous_compliant_commit_with_PR.authored_date)
+            current_commit = repo.remotes.origin.refs[compliant_branch].commit
+            self.log_commit_info(current_commit, "Current commit to compliant branch")
+            previous_commit = (
+                self.get_previous_compliant_commit_corresponding_to_pull_request(
+                    current_commit,
+                    consider_current_commit=False,
+                )
             )
-            log.debug("Message: " + previous_compliant_commit_with_PR.message)
-            diff = latest_compliant_commit.tree.diff(
-                previous_compliant_commit_with_PR.tree
+            self.log_commit_info(
+                previous_commit, "Previous PR commit to compliant branch"
             )
         elif current_branch.startswith("refs/pull/"):
-            # 'Build - before Merge': let's take the diff between the tree of the current commit, and the tree of the previous commit to the compliant branch corresponding to a PR (we assume the commit summary starts with 'Merged PR')
+            # 'Build - before Merge': we will take the diff between the tree of
+            # the current commit, and the tree of the previous commit to the
+            # compliant branch corresponding to a PR (we assume the commit
+            # summary starts with 'Merged PR')
             log.info(
                 "We are in the 'Build - before Merge' case (the current branch is not the compliant branch and its name starts with 'refs/pull/')."
             )
             current_commit = repo.commit()
-            log.debug("Current commit to current branch:")
-            log.debug("Summary: " + current_commit.summary)
-            log.debug("Author: " + str(current_commit.author))
-            log.debug("Authored Date: " + str(current_commit.authored_date))
-            log.debug("Message: " + current_commit.message)
-            latest_compliant_commit = repo.remotes.origin.refs[compliant_branch].commit
-            if not (latest_compliant_commit.summary.startswith("Merged PR")):
-                for c in latest_compliant_commit.iter_parents():
-                    if c.summary.startswith("Merged PR"):
-                        latest_compliant_commit = c
-                        break
-            log.debug("Previous PR commit to compliant branch:")
-            log.debug("Summary: " + latest_compliant_commit.summary)
-            log.debug("Author: " + str(latest_compliant_commit.author))
-            log.debug("Authored Date: " + str(latest_compliant_commit.authored_date))
-            log.debug("Message: " + latest_compliant_commit.message)
-            diff = current_commit.tree.diff(latest_compliant_commit.tree)
+            self.log_commit_info(current_commit, "Current commit to current branch")
+            latest_commit_to_compliant_branch = repo.remotes.origin.refs[
+                compliant_branch
+            ].commit
+            previous_commit = (
+                self.get_previous_compliant_commit_corresponding_to_pull_request(
+                    latest_commit_to_compliant_branch,
+                    consider_current_commit=True,
+                )
+            )
+            self.log_commit_info(
+                previous_commit, "Previous PR commit to compliant branch"
+            )
         else:
-            # 'Manual' Case: let's take the diff between the current branch and the compliant branch (we're assuming the compliant branch is locally up to date here)
+            # 'Manual' Case: we will take the diff between the current branch
+            # and the compliant branch (we're assuming the compliant branch is
+            # locally up to date here)
             log.info(
                 "We are in the 'Manual' case (the current branch is NOT the compliant branch and its name does not start with 'refs/pull/')."
             )
-            log.debug("Current commit to current branch:")
-            log.debug("Summary: " + repo.heads[current_branch].commit.summary)
-            log.debug("Author: " + str(repo.heads[current_branch].commit.author))
-            log.debug(
-                "Authored Date: " + str(repo.heads[current_branch].commit.authored_date)
-            )
-            log.debug("Message: " + repo.heads[current_branch].commit.message)
-            log.debug("Previous commit to compliant branch:")
-            log.debug("Summary: " + repo.heads[compliant_branch].commit.summary)
-            log.debug("Author: " + str(repo.heads[compliant_branch].commit.author))
-            log.debug(
-                "Authored Date: "
-                + str(repo.heads[compliant_branch].commit.authored_date)
-            )
-            log.debug("Message: " + repo.heads[compliant_branch].commit.message)
-            diff = repo.heads[current_branch].commit.tree.diff(
-                repo.heads[compliant_branch].commit.tree
-            )
-        # let's build a set with the paths of modified files
+            try:
+                current_commit = repo.heads[
+                    current_branch
+                ].commit  # this won't work when running the Manual case from the DevOps portal, but the below will
+            except (IndexError, AttributeError):
+                current_commit = repo.commit()
+            self.log_commit_info(current_commit, "Current commit to current branch")
+            try:
+                previous_commit = repo.heads[
+                    compliant_branch
+                ].commit  # this won't work when running the Manual case from the DevOps portal, but the below will
+            except (IndexError, AttributeError):
+                latest_commit_to_compliant_branch = repo.remotes.origin.refs[
+                    compliant_branch
+                ].commit
+                previous_commit = (
+                    self.get_previous_compliant_commit_corresponding_to_pull_request(
+                        latest_commit_to_compliant_branch,
+                        consider_current_commit=True,
+                    )
+                )
+            self.log_commit_info(previous_commit, "Previous commit to compliant branch")
+        # take the actual diff
+        diff = current_commit.tree.diff(previous_commit.tree)
+        # let's build a set with the paths of modified files found in the diff object
         log.debug("Working directory: " + self.config.working_directory)
         log.debug("repo.working_dir: " + repo.working_dir)
         log.debug("repo.working_tree_dir: " + repo.working_tree_dir)
@@ -383,6 +373,30 @@ CATATTR1=0x00010001:OSAttr:2:6.2
         log.info("The list of modified files is:")
         log.info(res)
         return res
+
+    def log_commit_info(self, commit, title) -> None:
+        log.debug(title + ":")
+        log.debug("Summary: " + commit.summary)
+        log.debug("Author: " + str(commit.author))
+        log.debug("Authored Date: " + str(commit.authored_date))
+        log.debug("Message: " + commit.message)
+
+    def get_previous_compliant_commit_corresponding_to_pull_request(
+        self, latest_commit, consider_current_commit
+    ):
+        """
+        This function will return the previous commit in the `repo`'s `compliant_branch_name` corresponding to a PR (i.e. that starts with "Merged PR").
+        If `consider_current_commit` is set to True, the `latest_commit` will be considered. If set to false, only previous commits will be considered.
+        """
+        target_string = "Merged PR"
+        if consider_current_commit and latest_commit.summary.startswith(target_string):
+            return latest_commit
+        previous_commit = latest_commit
+        for c in previous_commit.iter_parents():
+            if c.summary.startswith(target_string):
+                previous_commit = c
+                break
+        return previous_commit
 
     def infer_active_components_from_modified_files(self, modified_files) -> List[str]:
         """
