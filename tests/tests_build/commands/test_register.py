@@ -191,7 +191,6 @@ def test_register_all_signed_components_use_build_number(caplog):
 
     assert reg._component_statuses[component_path]["register"] == "succeeded"
     assert len(reg._errors) == 0
-    assert '"displayName": "Convert Text to StructureStream"' in caplog.text
     assert (
         f"Overwrite the component version with the specified value {build_number}"
         in caplog.text
