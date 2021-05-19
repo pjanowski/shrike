@@ -399,6 +399,7 @@ class AMLPipelineHelper:
         module_name,
         module_instance,
         windows=False,
+        gpu=False,
         target=None,
         node_count=None,
         process_count_per_node=None,
@@ -415,6 +416,7 @@ class AMLPipelineHelper:
             module_name (str): name of the module from the module manifest (required_modules() method)
             module_instance (Module): the aml module we need to add settings to
             windows (bool): is the module using windows compute?
+            gpu (bool): is the module using gpu compute?
             target (str): force target compute over hydra conf
             node_count (int): force node_count over hydra conf
             process_count_per_node (int): force process_count_per_node over hydra conf
@@ -425,18 +427,34 @@ class AMLPipelineHelper:
             output_mode (str): force output_mode over hydra conf
             custom_runtime_arguments (dict): any additional custom args
         """
-        if windows:
-            target = (
-                target
-                if target is not None
-                else self.config.compute.windows_cpu_prod_target
-            )
+        if self.module_loader.is_local(module_name):
+            if windows:
+                if gpu:
+                    raise ValueError(
+                        "A gpu compute target with Windows OS is not available yet!"
+                    )
+                else:
+                    _target = self.config.compute.windows_cpu_dc_target
+            else:
+                if gpu:
+                    _target = self.config.compute.linux_gpu_dc_target
+                else:
+                    _target = self.config.compute.linux_cpu_dc_target
         else:
-            target = (
-                target
-                if target is not None
-                else self.config.compute.linux_cpu_prod_target
-            )
+            if windows:
+                if gpu:
+                    raise ValueError(
+                        "A gpu compute target with Windows OS is not available yet!"
+                    )
+                else:
+                    _target = self.config.compute.windows_cpu_prod_target
+            else:
+                if gpu:
+                    _target = self.config.compute.linux_gpu_prod_target
+                else:
+                    _target = self.config.compute.linux_cpu_prod_target
+
+        target = target if target is not None else _target
 
         print(
             f"Using parallelrunstep compute target {target} to run {module_name} from pipeline class {self.__class__.__name__}"
@@ -737,6 +755,7 @@ class AMLPipelineHelper:
                 module_name,
                 module_instance,
                 windows=windows,
+                gpu=gpu,
                 **custom_runtime_arguments,
             )
             return
