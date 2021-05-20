@@ -7,6 +7,9 @@ from omegaconf import MISSING
 from typing import Optional, Any
 from shrike.pipeline.module_helper import module_loader_config, module_manifest
 
+# Default config for HDI components
+HDI_DEFAULT_CONF = '{"spark.yarn.appMasterEnv.DOTNET_ASSEMBLY_SEARCH_PATHS":"./udfs","spark.yarn.maxAppAttempts":"1","spark.yarn.appMasterEnv.PYSPARK_PYTHON":"/usr/bin/anaconda/envs/py37/bin/python3","spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON":"/usr/bin/anaconda/envs/py37/bin/python3"}'
+
 
 @dataclass
 class pipeline_cli_config:  # pylint: disable=invalid-name
@@ -62,7 +65,7 @@ class pipeline_compute_config:  # pylint: disable=invalid-name
     hdi_executor_memory: str = "3g"
     hdi_executor_cores: int = 2
     hdi_number_executors: int = 10
-    hdi_conf: str = '{"spark.yarn.maxAppAttempts":"1","spark.yarn.appMasterEnv.PYSPARK_PYTHON":"/usr/bin/anaconda/envs/py37/bin/python3","spark.yarn.appMasterEnv.PYSPARK_DRIVER_PYTHON":"/usr/bin/anaconda/envs/py37/bin/python3"}'
+    hdi_conf: Optional[Any] = MISSING
 
     parallel_node_count: int = 10
     parallel_process_count_per_node: int = 1

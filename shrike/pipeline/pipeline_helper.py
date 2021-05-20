@@ -16,6 +16,7 @@ from dataclasses import dataclass
 import hydra
 from hydra.core.config_store import ConfigStore
 from omegaconf import DictConfig, OmegaConf
+from flatten_dict import flatten
 
 import azureml
 from azureml.core import Datastore
@@ -31,7 +32,7 @@ from shrike import __version__
 from shrike.pipeline.aml_connect import azureml_connect, current_workspace
 from shrike.pipeline.canary_helper import get_repo_info
 from shrike.pipeline.module_helper import AMLModuleLoader, module_loader_config
-from shrike.pipeline.pipeline_config import default_config_dict
+from shrike.pipeline.pipeline_config import default_config_dict, HDI_DEFAULT_CONF
 from shrike.pipeline.telemetry_utils import TelemetryLogger
 
 
@@ -357,12 +358,22 @@ class AMLPipelineHelper:
         if custom_runtime_arguments:
             print(f"Adding custom runtime arguments {custom_runtime_arguments}")
 
-        conf = conf if conf is not None else self.config.compute.hdi_conf
-        # json.load the HDI config string
-        try:
-            conf = json.loads(conf)
-        except ValueError:
-            print(f"The hdi config {conf} is not a valid json-style string.")
+        merged_conf = json.loads(HDI_DEFAULT_CONF)
+        new_conf = (
+            self.config.compute.hdi_conf if "hdi_conf" in self.config.compute else None
+        )
+        if conf is not None:
+            new_conf = conf
+        if new_conf is not None:
+            if isinstance(new_conf, str):
+                new_conf = json.loads(new_conf)
+            elif isinstance(new_conf, DictConfig):
+                new_conf = flatten(dict(new_conf), reducer="dot")
+            else:
+                raise ValueError(
+                    "computed.hdi_conf is not a valid json string or a single tested configuration."
+                )
+            merged_conf.update(new_conf)
 
         module_instance.runsettings.configure(
             target=target
