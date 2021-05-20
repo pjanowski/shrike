@@ -48,6 +48,13 @@ just type without any extras:
 pip install shrike
 ```
 
+## Migration from `aml-build-tooling`, `aml-ds-pipeline-contrib`, and `confidential-ml-utils`
+If you have been using "aml-build-tooling", "aml-ds-pipeline-contrib", and `confidential-ml-utils` libraries, please use the migration script ([migration.py](https://github.com/Azure/shrike/blob/main/migration.py)) to convert your repo or file and adopt the `shrike` package with one simple command:
+```pwsh
+python migraton.py --input_path PATH/TO/YOUR/REPO/OR/FILE
+```
+:warning: This command will update files **in-place**. Please make a copy of your repo/file if you do not want to do so.
+
 ## Need Support?
 When you have any feature requests or technical questions or find
 any bugs, please don't hesitate to file issues.
