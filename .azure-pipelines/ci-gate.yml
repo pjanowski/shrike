@@ -67,7 +67,7 @@ steps:
     coverageType: lines
     forceCoverageImprovement: false
     coverageThreshold: 70
-    coverageUpperThreshold: 90
+  continueOnError: true
 
 - pwsh: |
     python setup.py sdist bdist_wheel
