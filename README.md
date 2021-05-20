@@ -34,18 +34,27 @@ registering Azure Machine Learning components.
 For the full documentation of `shrike` with detailed examples and API reference, 
 please see the [docs page](http://azure.github.io/shrike).
 
-
 ## Installation
-To install via PyPi, please type:
-```pwsh
-pip install shrike[pipeline,build]
-```
-There are three optional extra dependenciies - `pipeline`, `build` and `dev`, 
-among which `dev` is for the development environment of shrike. 
-If only the compliant-logging feature would be used, please 
-just type without any extras:
+
+The library `shrike` is publicly available in PyPi. There are three optional extra dependenciies - `pipeline`, `build` and `dev`, 
+among which  `pipeline` is for submitting Azure Machine Learning pipelines, `build` is for signing and registering components, 
+and `dev` is for the development environment of `shrike`.
+
+- If only the compliant-logging feature would be used, please pip install without any extras:
 ```pwsh
 pip install shrike
+```
+- If it will be used for signing and registering components, please type with `[build]`:
+```pwsh
+pip install shrike[build]
+```
+- If it will be used for submitting Azure Machine Learning pipelines, please type with `[pipeline]`:
+```pwsh
+pip install shrike[pipeline]
+```
+- If you would like to contribute to the source code, please install with all the dependencies:
+```pwsh
+pip install shrike[pipeline,build,dev]
 ```
 
 ## Migration from `aml-build-tooling`, `aml-ds-pipeline-contrib`, and `confidential-ml-utils`
