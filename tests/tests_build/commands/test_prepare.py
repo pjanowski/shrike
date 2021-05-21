@@ -591,6 +591,7 @@ def test_log_info_component_cli_installed(caplog):
 @pytest.mark.parametrize("catalog_file_name", ["catalog.json", "catalog.json.sig"])
 def test_create_catalog_files_for_aml(catalog_file_name):
     prep = prepare.Prepare()
+    prep.config = Configuration(suppress_adding_repo_pr_tags=True)
     # we'll test 2 component folder structures
     component1_folder = "tests/tests_build/steps/component1/"  # flat directory
     component2_folder = "tests/tests_build/steps/component2/"  # nested directories
@@ -769,3 +770,25 @@ def test_all_files_in_snapshot(component, expected_len):
     prep = prepare.Prepare()
     result = prep.all_files_in_snapshot(f"{directory}/spec.yaml")
     assert len(result) == expected_len
+
+
+@pytest.mark.order(-1)
+def test_add_repo_and_last_pr_to_tags():
+    component_path = str(
+        Path(__file__).parent.parent.resolve() / "steps/component4/spec.yaml"
+    )
+    prep = prepare.Prepare()
+    prep.config = Configuration()
+    prep.attach_workspace(
+        "/subscriptions/48bbc269-ce89-4f6f-9a12-c6f91fcb772d/resourceGroups/aml1p-rg/providers/Microsoft.MachineLearningServices/workspaces/aml1p-ml-canary"
+    )
+    prep.add_repo_and_last_pr_to_tags([component_path])
+    with open(component_path) as f:
+        spec_file = yaml.load(f)
+    spec_tags = spec_file.get("tags")
+    assert "repo" in spec_tags
+    assert "last_commit_id" in spec_tags
+
+    assert "last_commit_message" in spec_tags
+    assert "path_to_component" in spec_tags
+    assert "[link to commit]" in spec_file.get("description")

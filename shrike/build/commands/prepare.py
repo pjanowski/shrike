@@ -1,13 +1,10 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT license.
 
-import itertools
 import logging
-import glob
-from itertools import chain
 import os
 import collections
-from typing import List, Tuple, Union, Set
+from typing import List, Set
 import shutil
 from ruamel.yaml import YAML
 from git import Repo, InvalidGitRepositoryError, NoSuchPathError
@@ -20,6 +17,8 @@ from shrike.build.utils.utils import (
     delete_two_catalog_files,
 )
 from pathlib import Path
+import yaml
+import urllib.parse
 
 
 log = logging.getLogger(__name__)
@@ -208,6 +207,53 @@ CATATTR1=0x00010001:OSAttr:2:6.2
             )
 
         return rv
+
+    def add_repo_and_last_pr_to_tags(self, files: List[str]) -> List[str]:
+        [repo, current_branch, compliant_branch] = self.identify_repo_and_branches()
+        repo_path = repo.remotes.origin.url
+
+        for file in files:
+            with open(file, "r") as spec_file:
+                spec = yaml.load(spec_file, Loader=yaml.FullLoader)
+            if not isinstance(spec, dict):
+                continue
+            last_commit = next(repo.iter_commits(paths=file, max_count=1))
+            last_commit_id = last_commit.hexsha
+
+            last_commit_message = last_commit.summary
+            path_to_component = os.path.relpath(
+                os.path.split(file)[0], repo.working_dir
+            )
+            link_to_commit = (
+                repo_path
+                + "?version=GC"
+                + last_commit_id
+                + "&path="
+                + urllib.parse.quote(path_to_component, safe="")
+            )
+            # update description
+            cur_description = spec.get("description")
+            new_description = f"[link to commit]({link_to_commit})"
+            if cur_description:
+                spec["description"] = cur_description + "\n----\n" + new_description
+            else:
+                spec["description"] = new_description
+            # update tags
+            new_tag = {
+                "repo": repo_path,
+                "last_commit_id": last_commit_id,
+                "last_commit_message": last_commit_message,
+                "path_to_component": path_to_component,
+            }
+            cur_tag = spec.get("tags")
+            if cur_tag is None:
+                cur_tag = new_tag
+            else:
+                cur_tag.update(new_tag)
+            spec["tags"] = cur_tag
+            with open(file, "w") as spec_file:
+                yaml.dump(spec, spec_file, sort_keys=False)
+        return files
 
     def find_component_specification_files_using_all(self, dir=None) -> List[str]:
         """
@@ -547,6 +593,8 @@ CATATTR1=0x00010001:OSAttr:2:6.2
         self.telemetry_logging(command="prepare")
 
         component_files = self.find_component_specification_files()
+        if not self.config.suppress_adding_repo_pr_tags:
+            component_files = self.add_repo_and_last_pr_to_tags(component_files)
 
         if self.config.signing_mode == "aml":
             self.ensure_component_cli_installed()

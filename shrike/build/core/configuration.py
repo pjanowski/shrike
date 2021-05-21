@@ -37,6 +37,7 @@ class Configuration:
     use_build_number: bool = field(default=False)
     all_component_version: str = field(default="")
     disable_telemetry: bool = field(default=False)
+    suppress_adding_repo_pr_tags: bool = field(default=False)
 
 
 def load_configuration() -> Configuration:
