@@ -94,9 +94,9 @@ class Command(ABC):
             return True
         else:
             log.info(
-                f"installing component CLI version {self.config.component_cli_version}."
+                f"installing component CLI version 0.1.0.{self.config.component_cli_version}."
             )
-            cli_install_command = f"extension add --source https://azuremlsdktestpypi.blob.core.windows.net/wheels/modulesdkpreview/azure_cli_ml-{self.config.component_cli_version}-py3-none-any.whl --pip-extra-index-urls https://azuremlsdktestpypi.azureedge.net/modulesdkpreview --yes"
+            cli_install_command = f"extension add --source https://azuremlsdktestpypi.blob.core.windows.net/wheels/modulesdkpreview/azure_cli_ml-0.1.0.{self.config.component_cli_version}-py3-none-any.whl --pip-extra-index-urls https://azuremlsdktestpypi.azureedge.net/CLI-SDK-Runners-Validation/{self.config.component_cli_version} --yes"
             if self.config.verbose:
                 cli_install_command += " --verbose"
 
