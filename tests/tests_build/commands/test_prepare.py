@@ -567,6 +567,17 @@ def test_identify_repo_and_branches():
     assert compliant_branch == "CompliantBranchName"
 
 
+def test_identify_repo_and_branches_when_no_repo():
+    prep = prepare.Prepare()
+    prep.config = Configuration(
+        compliant_branch="^refs/heads/CompliantBranchName$",
+        working_directory=str(Path(__file__).parents[4]),
+    )  # we set the working directory above the repo level, so there's no repo to be found
+    print("Working directory: " + str(prep.config.working_directory))
+    with pytest.raises(Exception):
+        [repo, current_branch, compliant_branch] = prep.identify_repo_and_branches()
+
+
 @pytest.mark.order(-1)
 def test_ensure_component_cli_installed(caplog):
     prep = prepare.Prepare()

@@ -286,7 +286,7 @@ CATATTR1=0x00010001:OSAttr:2:6.2
 
     def identify_repo_and_branches(self):
         """
-        This function returns the current repository, along with the name of the current and compliant branches [repo, current_branch, compliant_branch].
+        This function returns the current repository, along with the name of the current and compliant branches [repo, current_branch, compliant_branch]. Throws if no repo can be found.
         """
         # identify the repository
         curr_path = Path(self.config.working_directory).resolve()
@@ -294,11 +294,11 @@ CATATTR1=0x00010001:OSAttr:2:6.2
             repo = Repo(curr_path, search_parent_directories=True)
             log.info("Found a valid repository in " + repo.git_dir)
         except (InvalidGitRepositoryError, NoSuchPathError):
-            log.debug(
+            message = (
                 str(curr_path)
                 + " or its parents do not contain a valid repo path or cannot be accessed."
             )
-            return None
+            raise Exception(message)
         try:
             current_branch = str(
                 repo.head.ref
