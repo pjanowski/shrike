@@ -149,7 +149,7 @@ def test_register_all_signed_components_already_exist_component_version(caplog):
     )
     assert '"displayName": "dummy_component"' in caplog.text
     assert (
-        f"{random_version_number} is not production-ready. NOT setting as default."
+        f"{random_version_number} is production-ready. Setting as default."
         in caplog.text
     )
 
@@ -207,7 +207,7 @@ def test_register_all_signed_components_use_build_number(caplog):
 
 
 @pytest.mark.order(-1)
-def test_set_default_version(caplog):
+def test_set_default_version_given_prod(caplog):
     # Clean up .build directories
     subprocess.run(["git", "clean", "-xdf"])
 
@@ -215,32 +215,28 @@ def test_set_default_version(caplog):
     # the version number so that we can "almost surely" have a new version number
     # every time we re-run this unit test.
     tmp_dir = str(get_target_path_in_steps_directory("tmp_dir"))
-    random_version_number = str(uniform(0.1, 1.0)) + ".0"
-    tmp_yaml = {
-        "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
-        "name": "dummy_component",
-        "version": random_version_number,
-        "type": "CommandComponent",
-        "command": "pip freeze",
-    }
-    tmp_yaml2 = {
-        "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
-        "name": "dummy_component",
-        "version": random_version_number + "-alpha",
-        "type": "CommandComponent",
-        "command": "pip freeze",
-    }
+    random_version_number = uniform(0.1, 1.0)
+    version_numbers = [str(random_version_number) + i for i in ["", ".1", ".1.1"]] + [
+        str(int(random_version_number * 100000000))
+    ]
     os.mkdir(tmp_dir)
-    with open(tmp_dir + "/spec.yaml", "w") as tmp_spec:
-        yaml.dump(tmp_yaml, tmp_spec)
-    with open(tmp_dir + "/spec2.yaml", "w") as tmp_spec:
-        yaml.dump(tmp_yaml2, tmp_spec)
+    for idx, version in enumerate(version_numbers):
+        tmp_yaml = {
+            "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
+            "name": "dummy_component",
+            "version": version,
+            "type": "CommandComponent",
+            "command": "pip freeze",
+        }
+
+        with open(tmp_dir + f"/spec{idx}.yaml", "w") as tmp_spec:
+            yaml.dump(tmp_yaml, tmp_spec)
 
     # Create catlog files
     prep = prepare.Prepare()
     prep.config = Configuration(signing_mode="aml")
     built_component_files = prep.build_all_components(
-        prep.find_component_specification_files()
+        files=[tmp_dir + f"/spec{idx}.yaml" for idx in range(len(version_numbers))]
     )
     prep.create_catalog_files(built_component_files)
 
@@ -249,35 +245,79 @@ def test_set_default_version(caplog):
     reg.config = Configuration()
     reg.attach_workspace(CANARY_WORKSPACE)
 
-    production_ready_component_path = str(
-        get_target_path_in_steps_directory("tmp_dir/.build/spec.yaml")
-    )
-    not_production_ready_component_path = str(
-        get_target_path_in_steps_directory("tmp_dir/.build/spec2.yaml")
-    )
+    component_path = [
+        str(get_target_path_in_steps_directory(f"tmp_dir/.build/spec{idx}.yaml"))
+        for idx in range(len(version_numbers))
+    ]
 
     with caplog.at_level("INFO"):
-        reg.register_all_signed_components(
-            [production_ready_component_path, not_production_ready_component_path]
-        )
-    assert (
-        reg._component_statuses[production_ready_component_path]["register"]
-        == "succeeded"
-    )
-    assert (
-        reg._component_statuses[not_production_ready_component_path]["register"]
-        == "succeeded"
-    )
+        reg.register_all_signed_components(component_path)
     assert len(reg._errors) == 0
-    assert '"displayName": "dummy_component"' in caplog.text
-    assert (
-        f"{random_version_number} is production-ready. Setting as default."
-        in caplog.text
+    for idx in range(len(version_numbers)):
+        assert reg._component_statuses[component_path[idx]]["register"] == "succeeded"
+        assert (
+            f"{version_numbers[idx]} is production-ready. Setting as default."
+            in caplog.text
+        )
+
+    # Cleanup
+    subprocess.run(["git", "clean", "-xdf"])
+
+
+@pytest.mark.order(-1)
+def test_set_default_version_given_dev(caplog):
+    # Clean up .build directories
+    subprocess.run(["git", "clean", "-xdf"])
+
+    # Create a temporary component folder and generate a random float number as
+    # the version number so that we can "almost surely" have a new version number
+    # every time we re-run this unit test.
+    tmp_dir = str(get_target_path_in_steps_directory("tmp_dir"))
+    random_version_number = uniform(0.1, 1.0)
+    version_numbers = [
+        str(random_version_number) + i
+        for i in ["-dev", "-beta0", "-alpha.1", "-rc1", "alpha"]
+    ]
+    os.mkdir(tmp_dir)
+    for idx, version in enumerate(version_numbers):
+        tmp_yaml = {
+            "$schema": "http://azureml/sdk-2-0/CommandComponent.json",
+            "name": "dummy_component",
+            "version": version,
+            "type": "CommandComponent",
+            "command": "pip freeze",
+        }
+
+        with open(tmp_dir + f"/spec{idx}.yaml", "w") as tmp_spec:
+            yaml.dump(tmp_yaml, tmp_spec)
+
+    # Create catlog files
+    prep = prepare.Prepare()
+    prep.config = Configuration(signing_mode="aml")
+    built_component_files = prep.build_all_components(
+        files=[tmp_dir + f"/spec{idx}.yaml" for idx in range(len(version_numbers))]
     )
-    assert (
-        f"{random_version_number}-alpha is not production-ready. NOT setting as default."
-        in caplog.text
-    )
+    prep.create_catalog_files(built_component_files)
+
+    # Start registration
+    reg = register.Register()
+    reg.config = Configuration()
+    reg.attach_workspace(CANARY_WORKSPACE)
+
+    component_path = [
+        str(get_target_path_in_steps_directory(f"tmp_dir/.build/spec{idx}.yaml"))
+        for idx in range(len(version_numbers))
+    ]
+
+    with caplog.at_level("INFO"):
+        reg.register_all_signed_components(component_path)
+    assert len(reg._errors) == 0
+    for idx in range(len(version_numbers)):
+        assert reg._component_statuses[component_path[idx]]["register"] == "succeeded"
+        assert (
+            f"{version_numbers[idx]} is not production-ready. NOT setting as default."
+            in caplog.text
+        )
 
     # Cleanup
     subprocess.run(["git", "clean", "-xdf"])
@@ -371,7 +411,7 @@ def test_register_component_command(caplog):
         )
 
     assert (
-        f"Register command is ml component create --file {component_path_1}\n"
+        f"Register command is ml component create --file {component_path_1} --label default\n"
         in caplog.text
     )
     assert (

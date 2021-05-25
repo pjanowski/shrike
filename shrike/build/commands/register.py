@@ -5,7 +5,7 @@ import logging
 import re
 from pathlib import Path
 from typing import List
-from semver import VersionInfo
+from packaging.version import parse
 from ruamel.yaml import YAML
 import os
 
@@ -107,16 +107,16 @@ class Register(Command):
         if self.config.all_component_version:
             register_command += f" --version {self.config.all_component_version}"
             component_raw_version = self.config.all_component_version
-            set_default_version = True
             log.info(
                 f"Overwrite the component version with the specified value {self.config.all_component_version}"
             )
-        else:
-            if VersionInfo.isvalid(component_raw_version):
-                component_version = VersionInfo.parse(component_raw_version)
-                set_default_version = (
-                    not component_version.prerelease and not component_version.build
-                )
+        try:
+            component_version = parse(component_raw_version)
+            set_default_version = (
+                component_version.base_version == component_raw_version
+            )
+        except:
+            log.error(f"{component_raw_version} is not a valid version number.")
         stderr_is_failure = self.config.fail_if_version_exists
         if set_default_version:
             log.info(
