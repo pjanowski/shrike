@@ -397,7 +397,7 @@ class AMLPipelineHelper:
             number_executors=number_executors
             if number_executors is not None
             else self.config.compute.hdi_number_executors,
-            conf=conf,
+            conf=merged_conf,
             **custom_runtime_arguments,
         )
 
