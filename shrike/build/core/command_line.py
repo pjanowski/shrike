@@ -48,7 +48,12 @@ class Command(ABC):
         first configured workspace if none is provided.
         """
         if workspace_id is None:
-            workspace_id = self.config.workspaces[0]
+            try:
+                workspace_id = self.config.workspaces[0]
+            except:
+                log.error(
+                    "Workspace is not configured. Please update in your CONFIGURATION_FILE using `--configuration-file CONFIGURATION_FILE`."
+                )
 
         (subscription_id, resource_group, workspace) = self.parse_workspace_arm_id(
             workspace_id
