@@ -54,6 +54,7 @@ class Command(ABC):
                 log.error(
                     "Workspace is not configured. Please update in your CONFIGURATION_FILE using `--configuration-file CONFIGURATION_FILE`."
                 )
+                return
 
         (subscription_id, resource_group, workspace) = self.parse_workspace_arm_id(
             workspace_id
